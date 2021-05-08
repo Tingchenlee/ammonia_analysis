@@ -1,0 +1,17 @@
+*** Collision rate limit violators report ***
+"Violation factor" is the ratio of the rate coefficient to the collision limit rate at the relevant conditions
+
+! Template reaction: R_Recombination
+! Flux pairs: NO(5), N2O2(46); NO(5), N2O2(46); 
+! BM rule fitted to 2 training reactions at node Root_N-1R->H_1CNOS->N_Ext-2R-R_3R!H-u0
+!     Total Standard Deviation in ln(k): 12.7194203157
+! Exact match found for rate rule [Root_N-1R->H_1CNOS->N_Ext-2R-R_3R!H-u0]
+! Euclidian distance = 0
+! family: R_Recombination
+NO(5)+NO(5)=N2O2(46)                                5.156200e+36 -7.489    1.348    
+
+Direction: forward
+Violation factor: 5.92
+Violation condition: 673.0 K, 0.0 bar
+
+

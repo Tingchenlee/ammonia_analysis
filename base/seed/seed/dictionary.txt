@@ -1,0 +1,110 @@
+X
+1 X u0 p0 c0
+
+O2
+multiplicity 3
+1 O u1 p2 c0 {2,S}
+2 O u1 p2 c0 {1,S}
+
+OX
+1 O u0 p2 c0 {2,D}
+2 X u0 p0 c0 {1,D}
+
+NH3
+1 N u0 p1 c0 {2,S} {3,S} {4,S}
+2 H u0 p0 c0 {1,S}
+3 H u0 p0 c0 {1,S}
+4 H u0 p0 c0 {1,S}
+
+HX
+1 H u0 p0 c0 {2,S}
+2 X u0 p0 c0 {1,S}
+
+N[Pt]
+1 N u0 p1 c0 {2,S} {3,S} {4,S}
+2 H u0 p0 c0 {1,S}
+3 H u0 p0 c0 {1,S}
+4 X u0 p0 c0 {1,S}
+
+[Pt].N
+1 N u0 p1 c0 {2,S} {3,S} {4,S}
+2 H u0 p0 c0 {1,S}
+3 H u0 p0 c0 {1,S}
+4 H u0 p0 c0 {1,S}
+5 X u0 p0 c0
+
+N=[Pt]
+1 N u0 p1 c0 {2,S} {3,D}
+2 H u0 p0 c0 {1,S}
+3 X u0 p0 c0 {1,D}
+
+HOX
+1 O u0 p2 c0 {2,S} {3,S}
+2 H u0 p0 c0 {1,S}
+3 X u0 p0 c0 {1,S}
+
+H2O
+1 O u0 p2 c0 {2,S} {3,S}
+2 H u0 p0 c0 {1,S}
+3 H u0 p0 c0 {1,S}
+
+H2OX
+1 O u0 p2 c0 {2,S} {3,S}
+2 H u0 p0 c0 {1,S}
+3 H u0 p0 c0 {1,S}
+4 X u0 p0 c0
+
+N#[Pt]
+1 N u0 p1 c0 {2,T}
+2 X u0 p0 c0 {1,T}
+
+[Pt]ON=[Pt]
+1 O u0 p2 c0 {2,S} {4,S}
+2 N u0 p1 c0 {1,S} {3,D}
+3 X u0 p0 c0 {2,D}
+4 X u0 p0 c0 {1,S}
+
+NO
+multiplicity 2
+1 O u0 p2 c0 {2,D}
+2 N u1 p1 c0 {1,D}
+
+[Pt]N=O
+1 O u0 p2 c0 {2,D}
+2 N u0 p1 c0 {1,D} {3,S}
+3 X u0 p0 c0 {2,S}
+
+N2
+1 N u0 p1 c0 {2,T}
+2 N u0 p1 c0 {1,T}
+
+[Pt]N=N[Pt]
+1 N u0 p1 c0 {2,D} {3,S}
+2 N u0 p1 c0 {1,D} {4,S}
+3 X u0 p0 c0 {1,S}
+4 X u0 p0 c0 {2,S}
+
+N#N.[Pt]
+1 N u0 p1 c0 {2,T}
+2 N u0 p1 c0 {1,T}
+3 X u0 p0 c0
+
+ONNO_cis
+1 O u0 p2 c0 {3,D}
+2 O u0 p2 c0 {4,D}
+3 N u0 p1 c0 {1,D} {4,S}
+4 N u0 p1 c0 {2,D} {3,S}
+
+[Pt]OO[Pt]
+1 O u0 p2 c0 {2,S} {3,S}
+2 O u0 p2 c0 {1,S} {4,S}
+3 X u0 p0 c0 {1,S}
+4 X u0 p0 c0 {2,S}
+
+ONOOJ
+multiplicity 2
+1 O u0 p2 c0 {2,S} {4,S}
+2 O u1 p2 c0 {1,S}
+3 O u0 p2 c0 {4,D}
+4 N u0 p1 c0 {1,S} {3,D}
+
