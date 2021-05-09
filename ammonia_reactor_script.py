@@ -1,6 +1,6 @@
 ###############################################
-# Grabow reactor batch script
-# Chris Blais
+# Rebrov reactor batch script
+# Ting-Chen Lee
 # Northeastern University
 # runs through all reactor conditions
 ###############################################
@@ -56,7 +56,7 @@ def show_flux_diagrams(self, suffix="", embed=False):
     """
     import IPython
 
-    for element in "CHONX":
+    for element in "CHONX": #try NH3?
         for phase_object in (self.gas, self.surf):
             phase = phase_object.name
             img_file = (
@@ -96,7 +96,7 @@ def save_flux_diagrams(*phases, suffix="", timepoint=""):
     Saves the flux diagrams. The filenames have a suffix if provided,
     so you can keep them separate and not over-write.
     """
-    for element in "CHONX":
+    for element in "CHONX":  #try NH3?
         for phase_object in phases:
             phase = phase_object.name
 
@@ -107,7 +107,8 @@ def save_flux_diagrams(*phases, suffix="", timepoint=""):
             dot_file = f"{suffix}/reaction_path_{element}_{phase}_{timepoint}.dot"
             img_file = f"{suffix}/reaction_path_{element}_{phase}_{timepoint}.png"
             dot_bin_path = (
-                "/Users/blais.ch/anaconda3/pkgs/graphviz-2.40.1-hefbbd9a_2/bin/dot"
+                "/Users/lee.ting/Code/anaconda3/pkgs/graphviz-2.40.1-hefbbd9a_2/bin/dot" 
+                #maybe try "/home/lee.ting/.conda/pkgs/graphviz-2.40.1-h21bd128_2/bin/dot"
             )
             img_path = os.path.join(os.getcwd(), img_file)
             diagram.write_dot(dot_file)
@@ -122,11 +123,11 @@ def save_flux_diagrams(*phases, suffix="", timepoint=""):
 
 def run_reactor(
     cti_file,
-    t_array=[528],
-    p_array=[75],
-    v_array=[0.00424],
-    h2_array=[0.75],
-    co2_array=[0.5],
+    t_array=[548],
+    p_array=[1],
+    v_array=[2.7155e-8], #14*7*(140e-4)^2*π/2*0.9=0.02715467 (cm3)
+    o2_array=[0.88],
+    nh3_array=[0.066],
     rtol=1.0e-11,
     atol=1.0e-22,
     reactor_type=0,
@@ -136,6 +137,8 @@ def run_reactor(
     sensrtol=1e-6,
     reactime=1e5,
 ):
+#14 aluminum plates, each of them containing seven semi-cylindrical mi-crochannels of 280 µm width 
+# and 140 µm depth, 9 mm long, arranged at equal distances of 280 µm 
 
     import pandas as pd
     import numpy as np
@@ -164,7 +167,7 @@ def run_reactor(
     git_msg = str(repo.head.commit.message)[0:20].replace(" ", "_").replace("'", "_")
 
     # this should probably be outside of function
-    settings = list(itertools.product(t_array, p_array, v_array, h2_array, co2_array))
+    settings = list(itertools.product(t_array, p_array, v_array, o2_array, nh3_array))
 
     # constants
     pi = math.pi
@@ -174,33 +177,23 @@ def run_reactor(
     temp_str = str(temp)[0:3]
     pressure = settings[array_i][1] * ct.one_atm  # Pascals
 
-    X_h2 = settings[array_i][3]
-    x_h2_str = str(X_h2)[0:3].replace(".", "_")
-    x_CO_CO2_str = str(settings[array_i][4])[0:3].replace(".", "_")
-
-    if X_h2 == 0.75:
-        X_h2o = 0.05
+    X_o2 = settings[array_i][3]
+    x_O2_str = str(X_o2)[0:3].replace(".", "_")
+    if X_o2 == 0.88:
+        X_he = 0.054
     else:
-        X_h2o = 0
+        X_he = 0
+    X_nh3 = (1 - (X_o2 + X_he)) * (settings[array_i][4])
+    x_NH3_str = str(X_nh3)[0:8].replace(".", "_")
+    
+    mw_nh3 = 17.0306e-3  # [kg/mol]
+    mw_o2 = 31.999e-3  # [kg/mol]
+    mw_he = 4.002602e-3  # [kg/mol]
 
-    X_co = (1 - (X_h2 + X_h2o)) * (settings[array_i][4])
-    X_co2 = (1 - (X_h2 + X_h2o)) * (1 - settings[array_i][4])
-
-    # normalize mole fractions just in case
-    # X_co = X_co/(X_co+X_co2+X_h2)
-    # X_co2= X_co2/(X_co+X_co2+X_h2)
-    # X_h2 = X_h2/(X_co+X_co2+X_h2)
-
-    mw_co = 28.01e-3  # [kg/mol]
-    mw_co2 = 44.01e-3  # [kg/mol]
-    mw_h2 = 2.016e-3  # [kg/mol]
-    mw_h2o = 18.01528e-3  # [kg/mol]
-
-    co2_ratio = X_co2 / (X_co + X_co2)
-    h2_ratio = (X_co2 + X_co) / X_h2
+    o2_ratio = X_nh3 / X_o2
 
     # CO/CO2/H2/H2: typical is
-    concentrations_rmg = {"O2(2)": X_co, "NH3(6)": X_co2, "He": X_h2}
+    concentrations_rmg = {"O2(2)": X_o2, "NH3(6)": X_nh3, "He": X_he}
 
     # initialize cantera gas and surface
     gas = ct.Solution(cti_file, "gas")
@@ -219,17 +212,15 @@ def run_reactor(
     exhaust = ct.Reservoir(gas)
 
     # Reactor volume
-    rradius = 35e-3
-    rlength = 70e-3
-    rvol = (rradius ** 2) * pi * rlength
+    rradius = 1.4e-4 #140µm to 0.00014m
+    rlength = 9e-3 #9mm to 0.009m
+    rvol = (rradius ** 2) * pi * rlength / 2
 
     # Catalyst Surface Area
-    site_density = (
-        surf.site_density * 1000
-    )  # [mol/m^2]cantera uses kmol/m^2, convert to mol/m^2
-    cat_weight = 4.24e-3  # [kg]
-    cat_site_per_wt = (300 * 1e-6) * 1000  # [mol/kg] 1e-6mol/micromole, 1000g/kg
-    cat_area = site_density / (cat_weight * cat_site_per_wt)  # [m^3]
+    site_density = (surf.site_density * 1000)  # [mol/m^2]cantera uses kmol/m^2, convert to mol/m^2
+    cat_area = rradius * 2 / 2 * pi * rlength # [m^3]
+    #suface site density = 1.86e-9 mol/cm2 = 1.96e-5 mol/m2; molecular weight for Pt = 195.084 g/mol
+    # per kg has 5.125997 moles Pt = 5.125997*6.022e23/1.12e15(cm-2) = 2.756138744e9 cm2/kg = 2.756e5m2/kg
 
     # reactor initialization
     if reactor_type == 0:
@@ -254,9 +245,7 @@ def run_reactor(
     FC_temp = 293.15
     volume_flow = settings[array_i][2]  # [m^3/s]
     molar_flow = volume_flow * one_atm / (8.3145 * FC_temp)  # [mol/s]
-    mass_flow = molar_flow * (
-        X_co * mw_co + X_co2 * mw_co2 + X_h2 * mw_h2 + X_h2o * mw_h2o
-    )  # [kg/s]
+    mass_flow = molar_flow * (X_nh3 * mw_nh3 + X_o2 * mw_o2 + X_he * mw_he)  # [kg/s]
     mfc = ct.MassFlowController(inlet, r, mdot=mass_flow)
 
     # A PressureController has a baseline mass flow rate matching the 'master'
@@ -290,7 +279,7 @@ def run_reactor(
     # )
     flux_path = (
         os.path.dirname(os.path.abspath(__file__))
-        + f"/{git_sha}_{git_msg}/{reactor_type_str}/transient/{temp_str}/flux_diagrams/{x_h2_str}/{x_CO_CO2_str}"
+        + f"/{git_sha}_{git_msg}/{reactor_type_str}/transient/{temp_str}/flux_diagrams/{x_O2_str}/{x_NH3_str}"
     )
     try:
         os.makedirs(results_path, exist_ok=True)
@@ -320,12 +309,12 @@ def run_reactor(
     output_filename = (
         results_path
         + f"/Spinning_basket_area_{cat_area_str}_energy_{energy}"
-        + f"_temp_{temp}_h2_{x_h2_str}_COCO2_{x_CO_CO2_str}.csv"
+        + f"_temp_{temp}_O2_{x_O2_str}_NH3_{x_NH3_str}.csv"
     )
     # output_filename_csp = (
     #     results_path_csp
     #     + f"/Spinning_basket_area_{cat_area_str}_energy_{energy}"
-    #     + f"_temp_{temp}_h2_{x_h2_str}_COCO2_{x_CO_CO2_str}.csv"
+    #     + f"_temp_{temp}_h2_{x_o2_str}_COCO2_{x_CO_CO2_str}.csv"
     # )
     outfile = open(output_filename, "w")
     # outfile_csp = open(output_filename_csp, "w")
@@ -368,12 +357,10 @@ def run_reactor(
                 "T (C)",
                 "P (atm)",
                 "V (M^3/s)",
-                "X_co initial",
-                "X_co2initial", 
-                "X_h2 initial",
-                "X_h2o initial",
-                "CO2/(CO2+CO)",
-                "(CO+CO2/H2)",
+                "X_nh3 initial", 
+                "X_o2 initial",
+                "X_he initial",
+                "(NH3/O2)",
                 "T (C) final",
                 "Rtol",
                 "Atol",
@@ -395,12 +382,10 @@ def run_reactor(
                 "T (C)",
                 "P (atm)",
                 "V (M^3/s)",
-                "X_co initial",
-                "X_co2 initial",
-                "X_h2 initial",
-                "X_h2o initial",
-                "CO2/(CO2+CO)",
-                "(CO+CO2/H2)",
+                "X_nh3 initial",
+                "X_o2 initial",
+                "X_he initial",
+                "(NH3/O2)",
                 "T (C) final",
                 "Rtol",
                 "Atol",
@@ -465,12 +450,10 @@ def run_reactor(
                     temp,
                     pressure,
                     volume_flow,
-                    X_co,
-                    X_co2,
-                    X_h2,
-                    X_h2o,
-                    co2_ratio,
-                    h2_ratio,
+                    X_nh3,
+                    X_o2,
+                    X_he,
+                    o2_ratio,
                     gas.T,
                     sim.rtol,
                     sim.atol,
@@ -491,12 +474,10 @@ def run_reactor(
                     temp,
                     pressure,
                     volume_flow,
-                    X_co,
-                    X_co2,
-                    X_h2,
-                    X_h2o,
-                    co2_ratio,
-                    h2_ratio,
+                    X_nh3,
+                    X_o2,
+                    X_he,
+                    o2_ratio,
                     gas.T,
                     sim.rtol,
                     sim.atol,
@@ -536,11 +517,11 @@ def run_reactor(
 
 def run_reactor_ss(
     cti_file,
-    t_array=[528],
-    p_array=[75],
-    v_array=[0.00424],
-    h2_array=[0.75],
-    co2_array=[0.5],
+    t_array=[548],
+    p_array=[1],
+    v_array=[2.7155e-8],
+    o2_array=[0.88],
+    nh3_array=[0.066],
     rtol=1.0e-11,
     atol=1.0e-22,
     reactor_type=0,
@@ -583,7 +564,7 @@ def run_reactor_ss(
     git_msg = str(repo.head.commit.message)[0:20].replace(" ", "_").replace("'", "_")
 
     # this should probably be outside of function
-    settings = list(itertools.product(t_array, p_array, v_array, h2_array, co2_array))
+    settings = list(itertools.product(t_array, p_array, v_array, o2_array, nh3_array))
 
     # constants
     pi = math.pi
@@ -593,33 +574,23 @@ def run_reactor_ss(
     temp_str = str(temp)[0:3]
     pressure = settings[array_i][1] * ct.one_atm  # Pascals
 
-    X_h2 = settings[array_i][3]
-    x_h2_str = str(X_h2)[0:3].replace(".", "_")
-    x_CO_CO2_str = str(settings[array_i][4])[0:3].replace(".", "_")
-
-    if X_h2 == 0.75:
-        X_h2o = 0.05
+    X_o2 = settings[array_i][3]
+    x_O2_str = str(X_o2)[0:3].replace(".", "_")
+    if X_o2 == 0.88:
+        X_he = 0.054
     else:
-        X_h2o = 0
+        X_he = 0
+    X_nh3 = (1 - (X_o2 + X_he)) * (settings[array_i][4])
+    x_NH3_str = str(X_nh3)[0:8].replace(".", "_")
+    
+    mw_nh3 = 17.0306e-3  # [kg/mol]
+    mw_o2 = 31.999e-3  # [kg/mol]
+    mw_he = 4.002602e-3  # [kg/mol]
 
-    X_co = (1 - (X_h2 + X_h2o)) * (settings[array_i][4])
-    X_co2 = (1 - (X_h2 + X_h2o)) * (1 - settings[array_i][4])
-
-    # normalize mole fractions just in case
-    # X_co = X_co/(X_co+X_co2+X_h2)
-    # X_co2= X_co2/(X_co+X_co2+X_h2)
-    # X_h2 = X_h2/(X_co+X_co2+X_h2)
-
-    mw_co = 28.01e-3  # [kg/mol]
-    mw_co2 = 44.01e-3  # [kg/mol]
-    mw_h2 = 2.016e-3  # [kg/mol]
-    mw_h2o = 18.01528e-3  # [kg/mol]
-
-    co2_ratio = X_co2 / (X_co + X_co2)
-    h2_ratio = (X_co2 + X_co) / X_h2
+    o2_ratio = X_nh3 / X_o2
 
     # CO/CO2/H2/H2: typical is
-    concentrations_rmg = {"O2(2)": X_co, "NH3(6)": X_co2, "He": X_h2}
+    concentrations_rmg = {"O2(2)": X_o2, "NH3(6)": X_nh3, "He": X_he}
 
     # initialize cantera gas and surface
     gas = ct.Solution(cti_file, "gas")
@@ -638,17 +609,13 @@ def run_reactor_ss(
     exhaust = ct.Reservoir(gas)
 
     # Reactor volume
-    rradius = 35e-3
-    rlength = 70e-3
-    rvol = (rradius ** 2) * pi * rlength
+    rradius = 1.4e-4 #140µm to 0.00014m
+    rlength = 9e-3 #9mm to 0.009m
+    rvol = (rradius ** 2) * pi * rlength / 2
 
     # Catalyst Surface Area
-    site_density = (
-        surf.site_density * 1000
-    )  # [mol/m^2]cantera uses kmol/m^2, convert to mol/m^2
-    cat_weight = 4.24e-3  # [kg]
-    cat_site_per_wt = (300 * 1e-6) * 1000  # [mol/kg] 1e-6mol/micromole, 1000g/kg
-    cat_area = site_density / (cat_weight * cat_site_per_wt)  # [m^3]
+    site_density = (surf.site_density * 1000)  # [mol/m^2]cantera uses kmol/m^2, convert to mol/m^2
+    cat_area = rradius * 2 / 2 * pi * rlength # [m^3]
 
     # reactor initialization
     if reactor_type == 0:
@@ -673,9 +640,7 @@ def run_reactor_ss(
     FC_temp = 293.15
     volume_flow = settings[array_i][2]  # [m^3/s]
     molar_flow = volume_flow * one_atm / (8.3145 * FC_temp)  # [mol/s]
-    mass_flow = molar_flow * (
-        X_co * mw_co + X_co2 * mw_co2 + X_h2 * mw_h2 + X_h2o * mw_h2o
-    )  # [kg/s]
+    mass_flow = molar_flow * (X_nh3 * mw_nh3 + X_o2 * mw_o2 + X_he * mw_he)  # [kg/s]
     mfc = ct.MassFlowController(inlet, r, mdot=mass_flow)
 
     # A PressureController has a baseline mass flow rate matching the 'master'
@@ -706,7 +671,7 @@ def run_reactor_ss(
 
     flux_path = (
         os.path.dirname(os.path.abspath(__file__))
-        + f"/{git_sha}_{git_msg}/{reactor_type_str}/steady_state/{temp_str}/flux_diagrams/{x_h2_str}/{x_CO_CO2_str}"
+        + f"/{git_sha}_{git_msg}/{reactor_type_str}/steady_state/{temp_str}/flux_diagrams/{x_O2_str}/{x_NH3_str}"
     )
     try:
         os.makedirs(results_path, exist_ok=True)
@@ -730,7 +695,7 @@ def run_reactor_ss(
     output_filename = (
         results_path
         + f"/Spinning_basket_area_{cat_area_str}_energy_{energy}"
-        + f"_temp_{temp}_h2_{x_h2_str}_COCO2_{x_CO_CO2_str}.csv"
+        + f"_temp_{temp}_O2_{x_O2_str}_NH3_{x_NH3_str}.csv"
     )
     
     outfile = open(output_filename, "w")
@@ -741,12 +706,10 @@ def run_reactor_ss(
             "T (C)",
             "P (atm)",
             "V (M^3/s)",
-            "X_co initial",
-            "X_co2 initial",
-            "X_h2 initial",
-            "X_h2o initial",
-            "CO2/(CO2+CO)",
-            "(CO+CO2/H2)",
+            "X_nh3 initial",
+            "X_o2 initial",
+            "X_he initial",
+            "(NH3/O2)",
             "T (C) final",
             "Rtol",
             "Atol",
@@ -770,12 +733,10 @@ def run_reactor_ss(
             temp,
             pressure,
             volume_flow,
-            X_co,
-            X_co2,
-            X_h2,
-            X_h2o,
-            co2_ratio,
-            h2_ratio,
+            X_nh3,
+            X_o2,
+            X_he,
+            o2_ratio,
             gas.T,
             sim.rtol,
             sim.atol,
@@ -807,21 +768,15 @@ def run_reactor_ss(
 cti_file = "/work/westgroup/lee.ting/cantera/ammonia/base/cantera/chem_annotated.cti"
 
 # Reactor settings arrays for run
-Temps = [400, 500, 600]
-Pressures = [15, 30, 50, 75]
-volume_flows = [0.00424, 0.0106, 0.02544]
+Temps = [400, 550, 700]
+Pressures = [1, 1, 1, 1]
+volume_flows = [5.8333e-5, 5.8333e-5, 5.8333e-5] # [m^3/s] 
+#3500 Ncm3/min = 3500/e6/60 m3/s = 5.8333e-5
 
-# Mole fractions from runs for reference (min max and mid from Graaf data)
-# X_cos = [0.053, 0.1365, 0.220]
-# X_co2s = [0.261,0.1205, 0.261]
-# X_h2s = [0.625, 0.7625, 0.900]
-
-# CO+CO2/H2
-# H2_fraction = [0.8,0.5,0.95,0.75]
-H2_fraction = [0.8, 0.5, 0.95, 0.75]
-
-# CO2/CO
-CO_CO2_ratio = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
+# NH3/O2 = 0.068
+### why h2 has 4 values but co2/co has 9 values
+O2_fraction = [0.1, 0.3, 0.6, 0.9] #O2 partial pressure, 0.10–0.88 atm
+NH3_fraction = [0.01, 0.0275, 0.045, 0.0625, 0.08, 0.0975, 0.115, 0.1325, 0.15] #NH3 partial pressure, 0.01–0.12 atm
 
 # reaction time
 reactime = 1e3
@@ -835,8 +790,8 @@ run_reactor(
     cti_file=cti_file,
     t_array=Temps,
     reactor_type=1,
-    h2_array=H2_fraction,
-    co2_array=CO_CO2_ratio,
+    o2_array=O2_fraction,
+    nh3_array=NH3_fraction,
     sensitivity=sensitivity,
     sensatol=sensatol,
     sensrtol=sensrtol,
@@ -850,7 +805,6 @@ run_reactor_ss(
     cti_file=cti_file,
     t_array=Temps,
     reactor_type=1,
-    h2_array=H2_fraction,
-    co2_array=CO_CO2_ratio,
+    o2_array=O2_fraction,
+    nh3_array=NH3_fraction,
 )
-

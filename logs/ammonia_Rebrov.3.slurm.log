@@ -1,0 +1,32 @@
+Traceback (most recent call last):
+  File "ammonia_reactor_script.py", line 798, in <module>
+    reactime=reactime,
+  File "ammonia_reactor_script.py", line 422, in run_reactor
+    sim.advance(t)
+  File "interfaces/cython/cantera/reactor.pyx", line 855, in cantera._cantera.ReactorNet.advance
+cantera._cantera.CanteraError: 
+***********************************************************************
+CanteraError thrown by CVodesIntegrator::integrate:
+CVodes error encountered. Error code: -3
+At t = 0.012526 and h = 1.99946e-11, the error test failed repeatedly or with |h| = hmin.
+
+Exceptions caught during RHS evaluation:
+
+***********************************************************************
+CanteraError thrown by Phase::setDensity():
+density must be positive. density = -73.4444
+***********************************************************************
+
+Components with largest weighted error estimates:
+0: 30.9054
+15: 11.8319
+18: 8.138
+17: 0.5991
+26: -0.0318235
+14: -0.0274738
+22: 0.0192027
+27: -0.00890972
+20: 0.00203866
+23: 5.03528e-05
+***********************************************************************
+

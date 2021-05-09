@@ -1,0 +1,40 @@
+digraph reaction_paths {
+center=1;
+s11 -> s20[fontname="Helvetica", penwidth=5.57, arrowsize=2.78, color="0.7, 1.06, 0.9"
+, label=" 0.562"];
+s12 -> s11[fontname="Helvetica", penwidth=4.29, arrowsize=2.15, color="0.7, 0.604, 0.9"
+, label=" 0.104"];
+s15 -> s11[fontname="Helvetica", penwidth=6, arrowsize=3, color="0.7, 1.5, 0.9"
+, label=" 1"];
+s16 -> s11[fontname="Helvetica", penwidth=5.24, arrowsize=2.62, color="0.7, 0.864, 0.9"
+, label=" 0.364"];
+s17 -> s11[fontname="Helvetica", penwidth=5.1, arrowsize=2.55, color="0.7, 0.803, 0.9"
+, label=" 0.303"];
+s20 -> s19[fontname="Helvetica", penwidth=5.57, arrowsize=2.78, color="0.7, 1.06, 0.9"
+, label=" 0.562"];
+s19 -> s22[fontname="Helvetica", penwidth=5.69, arrowsize=2.85, color="0.7, 1.17, 0.9"
+, label=" 0.667"];
+s22 -> s23[fontname="Helvetica", penwidth=5.69, arrowsize=2.85, color="0.7, 1.17, 0.9"
+, label=" 0.667"];
+s13 -> s14[fontname="Helvetica", penwidth=6, arrowsize=3, color="0.7, 1.5, 0.9"
+, label=" 1"];
+s14 -> s15[fontname="Helvetica", penwidth=6, arrowsize=3, color="0.7, 1.5, 0.9"
+, label=" 1"];
+s23 -> s16[fontname="Helvetica", penwidth=5.69, arrowsize=2.85, color="0.7, 1.16, 0.9"
+, label=" 0.664"];
+s16 -> s17[fontname="Helvetica", penwidth=5.1, arrowsize=2.55, color="0.7, 0.803, 0.9"
+, label=" 0.303"];
+s11 [ fontname="Helvetica", label="X(1)"];
+s12 [ fontname="Helvetica", label="HX(9)"];
+s13 [ fontname="Helvetica", label="OX(10)"];
+s14 [ fontname="Helvetica", label="HOX(13)"];
+s15 [ fontname="Helvetica", label="H2OX(14)"];
+s16 [ fontname="Helvetica", label="N2X2(25)"];
+s17 [ fontname="Helvetica", label="N2X(26)"];
+s19 [ fontname="Helvetica", label="H2NX(28)"];
+s20 [ fontname="Helvetica", label="H3NX(29)"];
+s22 [ fontname="Helvetica", label="HNX(49)"];
+s23 [ fontname="Helvetica", label="NX(59)"];
+ label = "Scale = 7.8e-06\l Reaction path diagram following X in surface1";
+ fontname = "Helvetica";
+}
