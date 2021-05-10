@@ -192,7 +192,7 @@ def run_reactor(
 
     o2_ratio = X_nh3 / X_o2
 
-    # CO/CO2/H2/H2: typical is
+    # O2/NH3/He: typical is
     concentrations_rmg = {"O2(2)": X_o2, "NH3(6)": X_nh3, "He": X_he}
 
     # initialize cantera gas and surface
@@ -273,10 +273,10 @@ def run_reactor(
         os.path.dirname(os.path.abspath(__file__))
         + f"/{git_sha}_{git_msg}/{reactor_type_str}/transient/{temp_str}/results"
     )
-    # results_path_csp = (
-    #     os.path.dirname(os.path.abspath(__file__))
-    #     + f"/{git_sha}_{git_msg}/{reactor_type_str}/transient/{temp_str}/results/csp"
-    # )
+    results_path_csp = (
+        os.path.dirname(os.path.abspath(__file__))
+        + f"/{git_sha}_{git_msg}/{reactor_type_str}/transient/{temp_str}/results/csp"
+    )
     flux_path = (
         os.path.dirname(os.path.abspath(__file__))
         + f"/{git_sha}_{git_msg}/{reactor_type_str}/transient/{temp_str}/flux_diagrams/{x_O2_str}/{x_NH3_str}"
@@ -286,10 +286,10 @@ def run_reactor(
     except OSError as error:
         print(error)
 
-    # try:
-    #     os.makedirs(results_path_csp, exist_ok=True)
-    # except OSError as error:
-    #     print(error)
+    try:
+        os.makedirs(results_path_csp, exist_ok=True)
+    except OSError as error:
+        print(error)
 
     try:
         os.makedirs(flux_path, exist_ok=True)
@@ -311,15 +311,15 @@ def run_reactor(
         + f"/Spinning_basket_area_{cat_area_str}_energy_{energy}"
         + f"_temp_{temp}_O2_{x_O2_str}_NH3_{x_NH3_str}.csv"
     )
-    # output_filename_csp = (
-    #     results_path_csp
-    #     + f"/Spinning_basket_area_{cat_area_str}_energy_{energy}"
-    #     + f"_temp_{temp}_h2_{x_o2_str}_COCO2_{x_CO_CO2_str}.csv"
-    # )
+    output_filename_csp = (
+        results_path_csp
+        + f"/Spinning_basket_area_{cat_area_str}_energy_{energy}"
+        + f"_temp_{temp}_h2_{x_O2_str}_NH3_{x_NH3_str}.csv"
+    )
     outfile = open(output_filename, "w")
-    # outfile_csp = open(output_filename_csp, "w")
+    outfile_csp = open(output_filename_csp, "w")
     writer = csv.writer(outfile)
-    # writer_csp = csv.writer(outfile_csp)
+    writer_csp = csv.writer(outfile_csp)
 
     # Sensitivity atol, rtol, and strings for gas and surface reactions if selected
     # slows down script by a lot
@@ -400,11 +400,11 @@ def run_reactor(
             + surfrxn_ROP_str
         )
 
-    # writer_csp.writerow(
-    #     ["iter", "t", "dt", "Density[kg/m3]", "Pressure[Pascal]", "Temperature[K]",]
-    #     + gas.species_names
-    #     + surf.species_names
-    # )
+    writer_csp.writerow(
+        ["iter", "t", "dt", "Density[kg/m3]", "Pressure[Pascal]", "Temperature[K]",]
+        + gas.species_names
+        + surf.species_names
+    )
 
     t = 0.0
     dt = 0.1
@@ -491,23 +491,23 @@ def run_reactor(
                 + list(surf.net_rates_of_progress)
             )
 
-        # writer_csp.writerow(
-        #     [
-        #         iter_ct,
-        #         sim.time,
-        #         dt,
-        #         gas.density,
-        #         gas.P,
-        #         gas.T,
-        #     ]
-        #     + list(gas.X)
-        #     + list(surf.X)
-        # )
+        writer_csp.writerow(
+            [
+                iter_ct,
+                sim.time,
+                dt,
+                gas.density,
+                gas.P,
+                gas.T,
+            ]
+            + list(gas.X)
+            + list(surf.X)
+        )
 
         iter_ct += 1
 
     outfile.close()
-    # outfile_csp.close()
+    outfile_csp.close()
 
     # save flux diagrams at the end of the run
     save_flux_diagrams(gas, suffix=flux_path, timepoint="end")
