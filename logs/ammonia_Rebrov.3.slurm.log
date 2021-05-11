@@ -1,7 +1,7 @@
 Traceback (most recent call last):
-  File "ammonia_reactor_script.py", line 798, in <module>
+  File "ammonia_reactor_script.py", line 852, in <module>
     reactime=reactime,
-  File "ammonia_reactor_script.py", line 422, in run_reactor
+  File "ammonia_reactor_script.py", line 477, in run_reactor
     sim.advance(t)
   File "interfaces/cython/cantera/reactor.pyx", line 855, in cantera._cantera.ReactorNet.advance
 cantera._cantera.CanteraError: 

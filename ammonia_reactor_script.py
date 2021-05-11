@@ -19,11 +19,98 @@ import itertools
 import logging
 from collections import defaultdict
 import git
+import h5py
+import json
+import shutil
+import subprocess
+import time
 
+from rmgpy.molecule import Molecule
+from rmgpy.data.base import Database
 
-# todo:
-# add in save_pictures so we save it in the proper folder
+# unit conversion factors to Cantera's SI
+CM = 0.01  # m
+MINUTE = 60.0  # s
 
+# dictionary of molecular weights
+MOLECULAR_WEIGHTS = {"H": 1.008, "O": 15.999, "C": 12.011, "N": 14.0067}
+
+def __init__(
+    self, cantera_filename, dictionary_filename, results_directory, atol, rtol
+    ):
+    """
+    total_length:  reactive length in m
+    number_of_reactors:  how many CSTRs
+    """
+    self.dictionary_filename = dictionary_filename  # species definitions
+    self.cantera_filename = cantera_filename
+    self.results_directory = results_directory
+    self.total_fluxes = {
+        "gas": dict(),
+        "surf": dict(),
+    }# each dict will have keys like 'C'
+
+    self.load_cantera_file()
+    
+    self.atol = atol
+    self.rtol = rtol
+
+def set_geometry(
+    self,
+    total_length,
+    number_of_reactors,
+    cat_area_per_gas_volume,
+    porosity,
+    cross_section_area,
+    ):
+    self.total_length = total_length  # in m
+    self.number_of_reactors = number_of_reactors
+    self.cat_area_per_gas_volume = cat_area_per_gas_volume
+    self.porosity = porosity
+    self.cross_section_area = cross_section_area  # in m2
+
+def set_initial_conditions(
+    self,
+    temperature_c,
+    feed_mole_fractions,
+    surface_coverages,
+    mass_flow_rate,
+    pressure,
+    ):
+    self.temperature_c = temperature_c  # in degrees C
+    self.feed_mole_fractions = feed_mole_fractions  # mole fractions
+    self.mass_flow_rate = mass_flow_rate  # in kg/s
+    self.pressure = pressure  # in Pa
+    self.surface_coverages = surface_coverages
+
+    self.gas.TPX = temperature_c + 273.15, pressure, feed_mole_fractions
+    self.surf.TP = temperature_c + 273.15, pressure
+    self.surf.coverages = self.surface_coverages
+
+def set_parameters(self, **kwargs):
+    """
+    Set the specified parameters
+    """
+    for key, value in kwargs.items():
+        setattr(self, key, value)
+        logging.info("Setting %s = %r", key, value)
+
+@property
+def reactor_length(self):
+        return self.total_length / self.number_of_reactors
+
+@property
+def gas_volume_per_reactor(self):
+        return self.cross_section_area * self.reactor_length * self.porosity
+
+@property
+def cat_area_per_reactor(self):
+    return self.cat_area_per_gas_volume * self.gas_volume_per_reactor
+def load_cantera_file(self):
+    "Create Gas Solution and Surface Interface from cti file"
+    cti_file = self.cantera_filename
+    self.gas = ct.Solution(cti_file)
+    self.surf = ct.Interface(cti_file, "surface1", [self.gas])
 
 def save_pictures(self, overwrite=False):
     """
@@ -45,7 +132,6 @@ def save_pictures(self, overwrite=False):
         print(name)
         species.molecule[0].draw(filepath)
 
-
 def show_flux_diagrams(self, suffix="", embed=False):
     """
     Shows the flux diagrams in the notebook.
@@ -56,7 +142,7 @@ def show_flux_diagrams(self, suffix="", embed=False):
     """
     import IPython
 
-    for element in "CHONX": #try NH3?
+    for element in "NH3": #try NH3?
         for phase_object in (self.gas, self.surf):
             phase = phase_object.name
             img_file = (
@@ -76,27 +162,12 @@ def show_flux_diagrams(self, suffix="", embed=False):
         else:
             display(IPython.display.Image(url=img_file, width=400, embed=False))
 
-
 def save_flux_diagrams(*phases, suffix="", timepoint=""):
-    import pandas as pd
-    import numpy as np
-    import time
-    import cantera as ct
-    from matplotlib import pyplot as plt
-    import csv
-    import math
-    import os
-    import sys
-    import re
-    import itertools
-    import logging
-    from collections import defaultdict
-
     """
     Saves the flux diagrams. The filenames have a suffix if provided,
     so you can keep them separate and not over-write.
     """
-    for element in "CHONX":  #try NH3?
+    for element in "NH3":  #try NH3?
         for phase_object in phases:
             phase = phase_object.name
 
@@ -120,7 +191,6 @@ def save_flux_diagrams(*phases, suffix="", timepoint=""):
             os.system(f"dot {dot_file} -Tpng -o{img_file} -Gdpi=200")
             print(f"Wrote graphviz output file to '{img_path}'.")
 
-
 def run_reactor(
     cti_file,
     t_array=[548],
@@ -139,21 +209,6 @@ def run_reactor(
 ):
 #14 aluminum plates, each of them containing seven semi-cylindrical mi-crochannels of 280 µm width 
 # and 140 µm depth, 9 mm long, arranged at equal distances of 280 µm 
-
-    import pandas as pd
-    import numpy as np
-    import time
-    import cantera as ct
-    from matplotlib import pyplot as plt
-    import csv
-    import math
-    import os
-    import sys
-    import re
-    import itertools
-    import logging
-    from collections import defaultdict
-    import git
 
     try:
         array_i = int(os.getenv("SLURM_ARRAY_TASK_ID"))
@@ -513,7 +568,6 @@ def run_reactor(
     save_flux_diagrams(gas, suffix=flux_path, timepoint="end")
     save_flux_diagrams(surf, suffix=flux_path, timepoint="end")
     return
-
 
 def run_reactor_ss(
     cti_file,

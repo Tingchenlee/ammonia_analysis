@@ -2,7 +2,7 @@
 
 #SBATCH -N 1
 #SBATCH -n 1
-#SBATCH --time=3:00:00
+#SBATCH --time=1:00:00
 #SBATCH --mem=20GB
 #SBATCH --job-name=ammonia
 #SBATCH --output=logs/ammonia_Rebrov.%a.log

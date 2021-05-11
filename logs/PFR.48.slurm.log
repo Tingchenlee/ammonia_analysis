@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "ammonia_PFR_reactor_script.py", line 1090, in <module>
+    pfr = run(reduced=False, nh3x_delta=10)
+  File "ammonia_PFR_reactor_script.py", line 1085, in run
+    pfr.plug_flow_simulation(output_filename)
+  File "ammonia_PFR_reactor_script.py", line 708, in plug_flow_simulation
+    gas_heat = np.dot(gas.net_rates_of_progress, gas.delta_enthalpy)
+  File "interfaces/cython/cantera/kinetics.pyx", line 255, in cantera._cantera.Kinetics.net_rates_of_progress.__get__
+  File "interfaces/cython/cantera/kinetics.pyx", line 18, in cantera._cantera.get_reaction_array
+IndexError: Out of bounds on buffer access (axis 0)
