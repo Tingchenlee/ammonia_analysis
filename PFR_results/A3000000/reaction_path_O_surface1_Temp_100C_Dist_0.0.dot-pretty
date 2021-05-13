@@ -1,9 +1,0 @@
-digraph reaction_paths {
-center=1;
-s3 -> s11[fontname="Helvetica", penwidth=6, arrowsize=3, color="1.0, 1.5, 0.7*1.5"
-, label=" 1"];
-s3 [ image="species_pictures/O2(2).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
-s11 [ image="species_pictures/OX(10).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
- label = "Scale = 0.00084\l Reaction path diagram following O in surface1";
- fontname = "Helvetica";
-}
