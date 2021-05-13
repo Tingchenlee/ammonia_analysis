@@ -1,0 +1,40 @@
+digraph reaction_paths {
+center=1;
+s18 -> s9[fontname="Helvetica", penwidth=5.91, arrowsize=2.96, color="1.0, 1.39, 0.7*1.39"
+, label=" 0.89"];
+s10 -> s9[fontname="Helvetica", penwidth=5.54, arrowsize=2.77, color="1.0, 1.05, 0.7*1.05"
+, label=" 0.547"];
+s13 -> s9[fontname="Helvetica", penwidth=5.81, arrowsize=2.9, color="1.0, 1.27, 0.7*1.27"
+, label=" 0.774"];
+s21 -> s9[fontname="Helvetica", penwidth=6, arrowsize=3, color="1.0, 1.5, 0.7*1.5"
+, label=" 0.999"];
+s17 -> s18[fontname="Helvetica", penwidth=5.91, arrowsize=2.96, color="1.0, 1.39, 0.7*1.39"
+, label=" 0.89"];
+s17 -> s19[fontname="Helvetica", penwidth=5.91, arrowsize=2.96, color="1.0, 1.39, 0.7*1.39"
+, label=" 0.89"];
+s19 -> s20[fontname="Helvetica", penwidth=6, arrowsize=3, color="1.0, 1.5, 0.7*1.5"
+, label=" 1"];
+s11 -> s12[fontname="Helvetica", penwidth=5.81, arrowsize=2.9, color="1.0, 1.27, 0.7*1.27"
+, label=" 0.773"];
+s11 -> s21[fontname="Helvetica", penwidth=6, arrowsize=3, color="1.0, 1.5, 0.7*1.5"
+, label=" 0.999"];
+s12 -> s13[fontname="Helvetica", penwidth=5.81, arrowsize=2.9, color="1.0, 1.27, 0.7*1.27"
+, label=" 0.773"];
+s20 -> s21[fontname="Helvetica", penwidth=6, arrowsize=3, color="1.0, 1.5, 0.7*1.5"
+, label=" 0.999"];
+s21 -> s16[fontname="Helvetica", penwidth=6, arrowsize=3, color="1.0, 1.5, 0.7*1.5"
+, label=" 0.999"];
+s9 [ image="species_pictures/X(1).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s10 [ image="species_pictures/HX(9).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s11 [ image="species_pictures/OX(10).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s12 [ image="species_pictures/HOX(13).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s13 [ image="species_pictures/H2OX(14).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s16 [ image="species_pictures/NOX(27).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s17 [ image="species_pictures/H2NX(28).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s18 [ image="species_pictures/H3NX(29).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s19 [ image="species_pictures/HNX(49).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s20 [ image="species_pictures/NX(59).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s21 [ image="species_pictures/NOX2(76).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+ label = "Scale = 1.2e-05\l Reaction path diagram following X in surface1";
+ fontname = "Helvetica";
+}

@@ -1,0 +1,15 @@
+digraph reaction_paths {
+center=1;
+s13 -> s9[fontname="Helvetica", penwidth=2.2, arrowsize=1.1, color="1.0, 0.507, 0.7*0.507"
+];
+s11 -> s12[fontname="Helvetica", penwidth=2.2, arrowsize=1.1, color="1.0, 0.507, 0.7*0.507"
+];
+s12 -> s13[fontname="Helvetica", penwidth=2.2, arrowsize=1.1, color="1.0, 0.507, 0.7*0.507"
+];
+s9 [ image="species_pictures/X(1).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s11 [ image="species_pictures/OX(10).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s12 [ image="species_pictures/HOX(13).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s13 [ image="species_pictures/H2OX(14).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+ label = "Scale = 1e-10\l Reaction path diagram following X in surface1";
+ fontname = "Helvetica";
+}

@@ -1,0 +1,17 @@
+digraph reaction_paths {
+center=1;
+s4 -> s1 [fontname="Helvetica", penwidth=2.05, arrowsize=1.03, color="1.0, 0.511, 0.7*0.511", label="0.0106"];
+s3 -> s4 [fontname="Helvetica", penwidth=2.05, arrowsize=1.03, color="1.0, 0.511, 0.7*0.511", label="0.0106"];
+s9 -> s10 [fontname="Helvetica", penwidth=6.00, arrowsize=3.00, color="1.0, 1.500, 0.7*1.500", label="1"];
+s10 -> s11 [fontname="Helvetica", penwidth=2.10, arrowsize=1.05, color="1.0, 0.511, 0.7*0.511", label="0.0112"];
+s11 -> s12 [fontname="Helvetica", penwidth=2.64, arrowsize=1.32, color="1.0, 0.521, 0.7*0.521", label="0.0209"];
+s4 [ image="species_pictures/H3NX(29).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s1 [ image="species_pictures/NH3(6).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s3 [ image="species_pictures/H2NX(28).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s9 [ image="species_pictures/O2(2).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s10 [ image="species_pictures/OX(10).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s11 [ image="species_pictures/NOX2(76).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s12 [ image="species_pictures/NOX(27).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+ label = "Scale = 479.20203841595907\l Reaction path diagram showing combined mass";
+ fontname = "Helvetica";
+}

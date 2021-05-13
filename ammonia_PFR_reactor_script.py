@@ -705,7 +705,7 @@ class PFR:
             distance_mm = n * self.reactor_length * 1.0e3  # distance in mm
 
             # heat evolved by gas phase reaction:
-            gas_heat = np.dot(gas.net_rates_of_progress, gas.delta_enthalpy)
+            gas_heat = surface_heat = alpha = 1
             # heat evolved by surf phase reaction:
             surface_heat = self.cat_area_per_gas_volume * np.dot(
                 surf.net_rates_of_progress, surf.delta_enthalpy

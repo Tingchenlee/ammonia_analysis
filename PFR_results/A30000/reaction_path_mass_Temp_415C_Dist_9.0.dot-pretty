@@ -1,0 +1,33 @@
+digraph reaction_paths {
+center=1;
+s1 -> s3 [fontname="Helvetica", penwidth=2.46, arrowsize=1.23, color="1.0, 0.517, 0.7*0.517", label="0.0169"];
+s1 -> s4 [fontname="Helvetica", penwidth=4.71, arrowsize=2.36, color="1.0, 0.727, 0.7*0.727", label="0.227"];
+s4 -> s3 [fontname="Helvetica", penwidth=4.61, arrowsize=2.31, color="1.0, 0.703, 0.7*0.703", label="0.203"];
+s3 -> s5 [fontname="Helvetica", penwidth=4.68, arrowsize=2.34, color="1.0, 0.718, 0.7*0.718", label="0.218"];
+s4 -> s6 [fontname="Helvetica", penwidth=2.85, arrowsize=1.42, color="1.0, 0.526, 0.7*0.526", label="0.0265"];
+s5 -> s6 [fontname="Helvetica", penwidth=2.33, arrowsize=1.17, color="1.0, 0.515, 0.7*0.515", label="0.0146"];
+s6 -> s8 [fontname="Helvetica", penwidth=5.19, arrowsize=2.59, color="1.0, 0.893, 0.7*0.893", label="0.393"];
+s8 -> s7 [fontname="Helvetica", penwidth=5.12, arrowsize=2.56, color="1.0, 0.864, 0.7*0.864", label="0.364"];
+s9 -> s10 [fontname="Helvetica", penwidth=5.53, arrowsize=2.76, color="1.0, 1.081, 0.7*1.081", label="0.581"];
+s10 -> s6 [fontname="Helvetica", penwidth=5.08, arrowsize=2.54, color="1.0, 0.849, 0.7*0.849", label="0.349"];
+s10 -> s11 [fontname="Helvetica", penwidth=5.45, arrowsize=2.73, color="1.0, 1.033, 0.7*1.033", label="0.533"];
+s11 -> s12 [fontname="Helvetica", penwidth=6.00, arrowsize=3.00, color="1.0, 1.500, 0.7*1.500", label="1"];
+s12 -> s13 [fontname="Helvetica", penwidth=5.28, arrowsize=2.64, color="1.0, 0.936, 0.7*0.936", label="0.436"];
+s5 -> s14 [fontname="Helvetica", penwidth=4.62, arrowsize=2.31, color="1.0, 0.703, 0.7*0.703", label="0.203"];
+s14 -> s11 [fontname="Helvetica", penwidth=5.34, arrowsize=2.67, color="1.0, 0.967, 0.7*0.967", label="0.467"];
+s1 [ image="species_pictures/NH3(6).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s3 [ image="species_pictures/H2NX(28).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s4 [ image="species_pictures/H3NX(29).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s5 [ image="species_pictures/HNX(49).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s6 [ image="species_pictures/HOX(13).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s8 [ image="species_pictures/H2OX(14).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s7 [ image="species_pictures/H2O(3).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s9 [ image="species_pictures/O2(2).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s10 [ image="species_pictures/OX(10).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s11 [ image="species_pictures/NOX2(76).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s12 [ image="species_pictures/NOX(27).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s13 [ image="species_pictures/NO(5).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s14 [ image="species_pictures/NX(59).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+ label = "Scale = 8.573056971550308e-07\l Reaction path diagram showing combined mass";
+ fontname = "Helvetica";
+}

@@ -1,0 +1,26 @@
+digraph reaction_paths {
+center=1;
+s7 -> s18[fontname="Helvetica", penwidth=3.36, arrowsize=1.68, color="1.0, 0.53, 0.7*0.53"
+, label=" 0.0303"];
+s18 -> s17[fontname="Helvetica", penwidth=2.61, arrowsize=1.31, color="1.0, 0.511, 0.7*0.511"
+, label=" 0.0112"];
+s17 -> s19[fontname="Helvetica", penwidth=2.6, arrowsize=1.3, color="1.0, 0.511, 0.7*0.511"
+, label=" 0.011"];
+s18 -> s12[fontname="Helvetica", penwidth=3.01, arrowsize=1.5, color="1.0, 0.519, 0.7*0.519"
+, label=" 0.019"];
+s19 -> s12[fontname="Helvetica", penwidth=2.6, arrowsize=1.3, color="1.0, 0.511, 0.7*0.511"
+, label=" 0.011"];
+s12 -> s13[fontname="Helvetica", penwidth=3.43, arrowsize=1.71, color="1.0, 0.533, 0.7*0.533"
+, label=" 0.0331"];
+s13 -> s4[fontname="Helvetica", penwidth=3.43, arrowsize=1.71, color="1.0, 0.533, 0.7*0.533"
+, label=" 0.0331"];
+s4 [ image="species_pictures/H2O(3).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s7 [ image="species_pictures/NH3(6).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s12 [ image="species_pictures/HOX(13).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s13 [ image="species_pictures/H2OX(14).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s17 [ image="species_pictures/H2NX(28).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s18 [ image="species_pictures/H3NX(29).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s19 [ image="species_pictures/HNX(49).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+ label = "Scale = 1e-10\l Reaction path diagram following H in surface1";
+ fontname = "Helvetica";
+}

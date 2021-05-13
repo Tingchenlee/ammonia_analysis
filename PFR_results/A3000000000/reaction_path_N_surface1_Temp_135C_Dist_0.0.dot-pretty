@@ -1,0 +1,26 @@
+digraph reaction_paths {
+center=1;
+s7 -> s17[fontname="Helvetica", penwidth=5.54, arrowsize=2.77, color="1.0, 1.05, 0.7*1.05"
+, label=" 0.547"];
+s18 -> s7[fontname="Helvetica", penwidth=5.91, arrowsize=2.96, color="1.0, 1.39, 0.7*1.39"
+, label=" 0.89"];
+s17 -> s18[fontname="Helvetica", penwidth=5.91, arrowsize=2.96, color="1.0, 1.39, 0.7*1.39"
+, label=" 0.89"];
+s17 -> s19[fontname="Helvetica", penwidth=5.91, arrowsize=2.96, color="1.0, 1.39, 0.7*1.39"
+, label=" 0.89"];
+s19 -> s20[fontname="Helvetica", penwidth=6, arrowsize=3, color="1.0, 1.5, 0.7*1.5"
+, label=" 1"];
+s20 -> s21[fontname="Helvetica", penwidth=6, arrowsize=3, color="1.0, 1.5, 0.7*1.5"
+, label=" 0.999"];
+s21 -> s16[fontname="Helvetica", penwidth=6, arrowsize=3, color="1.0, 1.5, 0.7*1.5"
+, label=" 0.999"];
+s7 [ image="species_pictures/NH3(6).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s16 [ image="species_pictures/NOX(27).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s17 [ image="species_pictures/H2NX(28).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s18 [ image="species_pictures/H3NX(29).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s19 [ image="species_pictures/HNX(49).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s20 [ image="species_pictures/NX(59).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s21 [ image="species_pictures/NOX2(76).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+ label = "Scale = 1.2e-05\l Reaction path diagram following N in surface1";
+ fontname = "Helvetica";
+}

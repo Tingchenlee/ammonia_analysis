@@ -1,0 +1,31 @@
+digraph reaction_paths {
+center=1;
+s7 -> s10[fontname="Helvetica", penwidth=5.19, arrowsize=2.6, color="1.0, 0.843, 0.7*0.843"
+, label=" 0.343"];
+s7 -> s17[fontname="Helvetica", penwidth=5.72, arrowsize=2.86, color="1.0, 1.19, 0.7*1.19"
+, label=" 0.686"];
+s18 -> s7[fontname="Helvetica", penwidth=6, arrowsize=3, color="1.0, 1.5, 0.7*1.5"
+, label=" 1"];
+s10 -> s12[fontname="Helvetica", penwidth=5.19, arrowsize=2.6, color="1.0, 0.843, 0.7*0.843"
+, label=" 0.343"];
+s17 -> s18[fontname="Helvetica", penwidth=6, arrowsize=3, color="1.0, 1.5, 0.7*1.5"
+, label=" 0.999"];
+s17 -> s19[fontname="Helvetica", penwidth=5.17, arrowsize=2.58, color="1.0, 0.833, 0.7*0.833"
+, label=" 0.333"];
+s19 -> s12[fontname="Helvetica", penwidth=4.91, arrowsize=2.46, color="1.0, 0.737, 0.7*0.737"
+, label=" 0.237"];
+s12 -> s13[fontname="Helvetica", penwidth=5.59, arrowsize=2.79, color="1.0, 1.08, 0.7*1.08"
+, label=" 0.58"];
+s13 -> s4[fontname="Helvetica", penwidth=5.59, arrowsize=2.8, color="1.0, 1.08, 0.7*1.08"
+, label=" 0.582"];
+s4 [ image="species_pictures/H2O(3).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s7 [ image="species_pictures/NH3(6).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s10 [ image="species_pictures/HX(9).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s12 [ image="species_pictures/HOX(13).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s13 [ image="species_pictures/H2OX(14).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s17 [ image="species_pictures/H2NX(28).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s18 [ image="species_pictures/H3NX(29).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+s19 [ image="species_pictures/HNX(49).png" label="" width="0.5" height="0.5" imagescale=false fixedsize=false color="none" ];
+ label = "Scale = 1.4e-05\l Reaction path diagram following H in surface1";
+ fontname = "Helvetica";
+}
