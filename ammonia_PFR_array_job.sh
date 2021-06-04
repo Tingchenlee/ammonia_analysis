@@ -8,6 +8,8 @@
 #SBATCH --output=logs/ammonia_Rebrov.%a.log
 #SBATCH --error=logs/ammonia_Rebrov.%a.slurm.log
 #SBATCH --partition=short
+#SBATCH --mail-user=lee.ting@northeastern.edu
+#SBATCH --mail-type=FAIL,END
 
 #an array for the job.
 #SBATCH --array=1-107
@@ -15,4 +17,4 @@
 
 ####################################################
 source activate rmg_env
-python -u ammonia_PRF_reactor_script.py
+python -u ammonia_PFR_reactor_script.py

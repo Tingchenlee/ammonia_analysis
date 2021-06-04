@@ -5,7 +5,6 @@
 # runs through all reactor conditions
 ###############################################
 
-import pandas as pd
 import numpy as np
 import time
 import cantera as ct
@@ -19,11 +18,7 @@ import itertools
 import logging
 from collections import defaultdict
 import git
-import h5py
 import json
-import shutil
-import subprocess
-import time
 
 from rmgpy.molecule import Molecule
 from rmgpy.data.base import Database
@@ -125,7 +120,7 @@ def show_flux_diagrams(self, suffix="", embed=False):
     """
     import IPython
 
-    for element in "NH3": #try NH3?
+    for element in "CHON":
         for phase_object in (self.gas, self.surf):
             phase = phase_object.name
             img_file = (
@@ -150,7 +145,7 @@ def save_flux_diagrams(*phases, suffix="", timepoint="", species_path=""):
     Saves the flux diagrams. The filenames have a suffix if provided,
     so you can keep them separate and not over-write.
     """
-    for element in "CHON":  #try NH3?
+    for element in "CHON":
         for phase_object in phases:
             phase = phase_object.name
 
@@ -180,20 +175,20 @@ def save_flux_diagrams(*phases, suffix="", timepoint="", species_path=""):
 
 def run_reactor(
     cti_file,
-    t_array=[548],
-    surf_t_array=[548], # not used, but will be for different starting temperatures
+    t_array=[598],
+    surf_t_array=[598], # not used, but will be for different starting temperatures
     p_array=[1],
-    v_array=[2.7155e-8], # 14*7*(140e-4)^2*π/2*0.9=0.02715467 (cm3)
-    o2_array=[0.88],
-    nh3_array=[0.066],
-    rtol=1.0e-11,
-    atol=1.0e-22,
+    v_array=[2.7155e-8], # 14*7*(140e-4)^2*π/2*0.9=0.02715467 (cm3) # try 2.77093e-10 m^3
+    o2_array=[0.20],
+    nh3_array=[0.12],
+    rtol=1.0e-8,
+    atol=1.0e-16,
     reactor_type=0,
     energy="off",
     sensitivity=False,
     sensatol=1e-6,
     sensrtol=1e-6,
-    reactime=1e5,
+    reactime=1e3,
     ):
 
     # 14 aluminum plates, each of them containing seven semi-cylindrical microchannels of 280 µm width 
@@ -272,7 +267,7 @@ def run_reactor(
     exhaust = ct.Reservoir(gas)
 
     # Reactor volume
-    number_of_reactors = 1000
+    number_of_reactors = 1001
     rradius = 1.4e-4 #140µm to 0.00014m
     rlength = 9e-3 #9mm to 0.009m
     rtotal_vol = (rradius ** 2) * pi * rlength / 2
@@ -306,7 +301,7 @@ def run_reactor(
     r.volume = rvol
     surf.coverages = "X(1):1.0"
 
-    # flow controllers (Graaf measured flow at 293.15 and 1 atm)
+    # flow controllers 
     one_atm = ct.one_atm
     FC_temp = 293.15
     volume_flow = settings[array_i][3]  # [m^3/s]
@@ -324,8 +319,8 @@ def run_reactor(
     sim = ct.ReactorNet([r])
 
     # set relative and absolute tolerances on the simulation
-    sim.rtol = 1.0e-11
-    sim.atol = 1.0e-22
+    sim.rtol = 1.0e-8
+    sim.atol = 1.0e-16
 
     #################################################
     # Run single reactor
@@ -390,7 +385,7 @@ def run_reactor(
     if sensitivity:
         sim.rtol_sensitivity = sensrtol
         sim.atol_sensitivity = sensatol
-        sens_species = ["NH3(6)"]  #change THIS to your species, can add "," and other species
+        sens_species = ["NH3(6)", "O2(2)", "N2(4)", "NO(5)", "N2O(7)"]  #change THIS to your species, can add "," and other species
 
         # turn on sensitive reactions
         for i in range(gas.n_reactions):
@@ -605,15 +600,14 @@ git_repo = "../ammonia/"
 cti_file = git_repo + "base/cantera/chem_annotated.cti"
 
 # Reactor settings arrays for run
-Temps = [400,550,700]
-Pressures = [1]
+Temps = [225,415,600]  # C
+Pressures = [1] # 1 bar
 volume_flows = [5.8333e-5] # [m^3/s] 
 #3500 Ncm3/min = 3500/e6/60 m3/s = 5.8333e-5
 
 # NH3/O2 = 0.068
-### why h2 has 4 values but co2/co has 9 values
-O2_fraction = [0.1, 0.3, 0.6, 0.9] #O2 partial pressure, 0.10–0.88 atm
-NH3_fraction = [0.01, 0.0275, 0.045, 0.0625, 0.08, 0.0975, 0.115, 0.1325, 0.15] #NH3 partial pressure, 0.01–0.12 atm
+O2_fraction = [0.1, 0.3, 0.6, 0.88] #O2 partial pressure, 0.10–0.88 atm
+NH3_fraction = [0.01, 0.02, 0.025, 0.04, 0.055, 0.07, 0.085, 0.1, 0.12] #NH3 partial pressure, 0.01–0.12 atm
 
 # reaction time
 reactime = 1e3
