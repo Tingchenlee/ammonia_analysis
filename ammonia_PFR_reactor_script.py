@@ -175,20 +175,20 @@ def save_flux_diagrams(*phases, suffix="", timepoint="", species_path=""):
 
 def run_reactor(
     cti_file,
-    t_array=[598],
-    surf_t_array=[598], # not used, but will be for different starting temperatures
+    t_array=[548],
+    surf_t_array=[548], # not used, but will be for different starting temperatures
     p_array=[1],
-    v_array=[2.7155e-8], # 14*7*(140e-4)^2*π/2*0.9=0.02715467 (cm3) # try 2.77093e-10 m^3
-    o2_array=[0.20],
-    nh3_array=[0.12],
-    rtol=1.0e-8,
-    atol=1.0e-16,
+    v_array=[2.771e-8], # 14*7*(140e-4)^2*π/2*0.9=0.0002771(cm^3)=2.771e-10(m^3)
+    o2_array=[0.88],
+    nh3_array=[0.066],
+    rtol=1.0e-11,
+    atol=1.0e-22,
     reactor_type=0,
     energy="off",
     sensitivity=False,
     sensatol=1e-6,
     sensrtol=1e-6,
-    reactime=1e3,
+    reactime=1e5,
     ):
 
     # 14 aluminum plates, each of them containing seven semi-cylindrical microchannels of 280 µm width 
@@ -231,7 +231,7 @@ def run_reactor(
     x_O2_str = str(X_o2)[0:3].replace(".", "_")
 
     X_nh3 = (settings[array_i][5])
-    x_NH3_str = str(X_nh3)[0:8].replace(".", "_")
+    x_NH3_str = str(X_nh3)[0:11].replace(".", "_")
 
     X_he = 1 - X_o2 - X_nh3
 
@@ -267,10 +267,12 @@ def run_reactor(
     exhaust = ct.Reservoir(gas)
 
     # Reactor volume
-    number_of_reactors = 1001
+    number_of_reactors = 1000
     rradius = 1.4e-4 #140µm to 0.00014m
-    rlength = 9e-3 #9mm to 0.009m
-    rtotal_vol = (rradius ** 2) * pi * rlength / 2
+    rtotal_length = 9e-3 #9mm to 0.009m
+    rtotal_vol = (rradius ** 2) * pi * rtotal_length # / 2 (divided by 2 for semi-cylinder)
+    
+    rlength = rtotal_length/1000
 
 
     # divide totareactor total volume 
@@ -279,7 +281,7 @@ def run_reactor(
 
     # Catalyst Surface Area
     site_density = (surf.site_density * 1000)  # [mol/m^2] cantera uses kmol/m^2, convert to mol/m^2
-    cat_area_total = rradius * 2 / 2 * pi * rlength # [m^3]
+    cat_area_total = 14*rradius * 2 * pi * rtotal_length # [m^3]  # / 2 (divided by 2 for semi-cylinder)
     cat_area = cat_area_total / number_of_reactors
 
     # reactor initialization
@@ -319,8 +321,9 @@ def run_reactor(
     sim = ct.ReactorNet([r])
 
     # set relative and absolute tolerances on the simulation
-    sim.rtol = 1.0e-8
-    sim.atol = 1.0e-16
+    # Common values for absolute tolerance are 1e-15 to 1e-25. Relative tolerance is usually 1e-4 to 1e-8
+    sim.rtol = 1.0e-4
+    sim.atol = 1.0e-15
 
     #################################################
     # Run single reactor
@@ -600,14 +603,14 @@ git_repo = "../ammonia/"
 cti_file = git_repo + "base/cantera/chem_annotated.cti"
 
 # Reactor settings arrays for run
-Temps = [225,415,600]  # C
+Temps = [250, 300, 400]  #C, 523-673K
 Pressures = [1] # 1 bar
 volume_flows = [5.8333e-5] # [m^3/s] 
 #3500 Ncm3/min = 3500/e6/60 m3/s = 5.8333e-5
 
 # NH3/O2 = 0.068
-O2_fraction = [0.1, 0.3, 0.6, 0.88] #O2 partial pressure, 0.10–0.88 atm
-NH3_fraction = [0.01, 0.02, 0.025, 0.04, 0.055, 0.07, 0.085, 0.1, 0.12] #NH3 partial pressure, 0.01–0.12 atm
+O2_fraction = [0.88] #O2 partial pressure, 0.10–0.88 atm
+NH3_fraction = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12] #NH3 partial pressure, 0.01–0.12 atm
 
 # reaction time
 reactime = 1e3
@@ -619,7 +622,7 @@ sensrtol = 1e-6
 
 run_reactor(
     cti_file=cti_file,
-    t_array=Temps, 
+    t_array=Temps,
     reactor_type=1,
     o2_array=O2_fraction,
     nh3_array=NH3_fraction,
