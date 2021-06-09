@@ -330,17 +330,17 @@ def run_reactor(
     # if it doesn't already exist, g
     species_path = (
         os.path.dirname(os.path.abspath(__file__))
-        + f"/temp_results/{git_file_string}/species_pictures"
+        + f"/results/temp_results/{git_file_string}/species_pictures"
     )
 
     results_path = (
         os.path.dirname(os.path.abspath(__file__))
-        + f"/temp_results/{git_file_string}/{reactor_type_str}/energy_{energy}/sensitivity_{sensitivity_str}/{temp_str}/results"
+        + f"/results/temp_results/{git_file_string}/{reactor_type_str}/energy_{energy}/sensitivity_{sensitivity_str}/{temp_str}/results"
     )
 
     flux_path = (
         os.path.dirname(os.path.abspath(__file__))
-        + f"/temp_results/{git_file_string}/{reactor_type_str}/energy_{energy}/sensitivity_{sensitivity_str}/{temp_str}/flux_diagrams/{x_O2_str}/{x_NH3_str}"
+        + f"/results/temp_results/{git_file_string}/{reactor_type_str}/energy_{energy}/sensitivity_{sensitivity_str}/{temp_str}/flux_diagrams/{x_O2_str}/{x_NH3_str}"
     )
     # create species folder for species pictures if it does not already exist
     try:

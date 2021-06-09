@@ -330,17 +330,17 @@ def run_reactor(
     # if it doesn't already exist, g
     species_path = (
         os.path.dirname(os.path.abspath(__file__))
-        + f"/O2_results/{git_file_string}/species_pictures"
+        + f"/results/O2_results/{git_file_string}/species_pictures"
     )
 
     results_path = (
         os.path.dirname(os.path.abspath(__file__))
-        + f"/O2_results/{git_file_string}/{reactor_type_str}/energy_{energy}/sensitivity_{sensitivity_str}/{temp_str}/results"
+        + f"/results/O2_results/{git_file_string}/{reactor_type_str}/energy_{energy}/sensitivity_{sensitivity_str}/{temp_str}/results"
     )
 
     flux_path = (
         os.path.dirname(os.path.abspath(__file__))
-        + f"/O2_results/{git_file_string}/{reactor_type_str}/energy_{energy}/sensitivity_{sensitivity_str}/{temp_str}/flux_diagrams/{x_O2_str}/{x_NH3_str}"
+        + f"/results/O2_results/{git_file_string}/{reactor_type_str}/energy_{energy}/sensitivity_{sensitivity_str}/{temp_str}/flux_diagrams/{x_O2_str}/{x_NH3_str}"
     )
     # create species folder for species pictures if it does not already exist
     try:
@@ -547,7 +547,7 @@ def run_reactor(
                 + list(surf.X)
                 + list(gas.net_production_rates)
                 + list(surf.net_production_rates)
-                + list(gas.net_rates_of_progress)
+              #  + list(gas.net_rates_of_progress)
                 + list(surf.net_rates_of_progress)
                 + sensitivities_all,
             )
@@ -573,7 +573,7 @@ def run_reactor(
                 + list(surf.X)
                 + list(gas.net_production_rates)
                 + list(surf.net_production_rates)
-                + list(gas.net_rates_of_progress)
+               # + list(gas.net_rates_of_progress)
                 + list(surf.net_rates_of_progress)
             )
 
@@ -597,13 +597,15 @@ git_repo = "../ammonia/"
 cti_file = git_repo + "base/cantera/chem_annotated.cti"
 
 # Reactor settings arrays for run
-Temps = [498,523,548,573,598,623,648,673,698]  #523-673K
+#Temps = [498,523,548,573,598,623,648,673,698]  #523-673K
+Temps = [598]
+
 Pressures = [1] # 1 bar
 volume_flows = [5.8333e-5] # [m^3/s] 
 #3500 Ncm3/min = 3500/e6/60 m3/s = 5.8333e-5
 
 # NH3/O2 = 0.068
-O2_fraction = np.linspace(0.01,0.88,100) #O2 partial pressure, 0.10–0.88 atm
+O2_fraction = np.linspace(0.1,0.88,100) #O2 partial pressure, 0.10–0.88 atm
 NH3_fraction = [0.066] #NH3 partial pressure(atm)
 
 # reaction time

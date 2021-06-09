@@ -330,17 +330,17 @@ def run_reactor(
     # if it doesn't already exist, g
     species_path = (
         os.path.dirname(os.path.abspath(__file__))
-        + f"/NH3_results/{git_file_string}/species_pictures"
+        + f"/results/NH3_results/{git_file_string}/species_pictures"
     )
 
     results_path = (
         os.path.dirname(os.path.abspath(__file__))
-        + f"/NH3_results/{git_file_string}/{reactor_type_str}/energy_{energy}/sensitivity_{sensitivity_str}/{temp_str}/results"
+        + f"/results/NH3_results/{git_file_string}/{reactor_type_str}/energy_{energy}/sensitivity_{sensitivity_str}/{temp_str}/results"
     )
 
     flux_path = (
         os.path.dirname(os.path.abspath(__file__))
-        + f"/NH3_results/{git_file_string}/{reactor_type_str}/energy_{energy}/sensitivity_{sensitivity_str}/{temp_str}/flux_diagrams/{x_O2_str}/{x_NH3_str}"
+        + f"/results/NH3_results/{git_file_string}/{reactor_type_str}/energy_{energy}/sensitivity_{sensitivity_str}/{temp_str}/flux_diagrams/{x_O2_str}/{x_NH3_str}"
     )
     # create species folder for species pictures if it does not already exist
     try:
@@ -547,7 +547,7 @@ def run_reactor(
                 + list(surf.X)
                 + list(gas.net_production_rates)
                 + list(surf.net_production_rates)
-                + list(gas.net_rates_of_progress)
+             #   + list(gas.net_rates_of_progress)
                 + list(surf.net_rates_of_progress)
                 + sensitivities_all,
             )
@@ -573,7 +573,7 @@ def run_reactor(
                 + list(surf.X)
                 + list(gas.net_production_rates)
                 + list(surf.net_production_rates)
-                + list(gas.net_rates_of_progress)
+              #  + list(gas.net_rates_of_progress)
                 + list(surf.net_rates_of_progress)
             )
 
