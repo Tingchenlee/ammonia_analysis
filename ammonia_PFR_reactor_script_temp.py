@@ -222,7 +222,7 @@ def run_reactor(
 
     # set initial temps, pressures, concentrations
     temp = settings[array_i][0]  # kelvin
-    temp_str = str(temp)[0:8]
+    temp_str = str(temp)[0:100]
     pressure = settings[array_i][2] * ct.one_atm  # Pascals
 
     surf_temp = temp
@@ -231,7 +231,7 @@ def run_reactor(
     x_O2_str = str(X_o2)[0].replace(".", "_")
 
     X_nh3 = (settings[array_i][5])
-    x_NH3_str = str(X_nh3)[0:100].replace(".", "_")
+    x_NH3_str = str(X_nh3)[0].replace(".", "_")
 
     X_he = 1 - X_o2 - X_nh3
 
@@ -330,17 +330,17 @@ def run_reactor(
     # if it doesn't already exist, g
     species_path = (
         os.path.dirname(os.path.abspath(__file__))
-        + f"/NH3_results/{git_file_string}/species_pictures"
+        + f"/temp_results/{git_file_string}/species_pictures"
     )
 
     results_path = (
         os.path.dirname(os.path.abspath(__file__))
-        + f"/NH3_results/{git_file_string}/{reactor_type_str}/energy_{energy}/sensitivity_{sensitivity_str}/{temp_str}/results"
+        + f"/temp_results/{git_file_string}/{reactor_type_str}/energy_{energy}/sensitivity_{sensitivity_str}/{temp_str}/results"
     )
 
     flux_path = (
         os.path.dirname(os.path.abspath(__file__))
-        + f"/NH3_results/{git_file_string}/{reactor_type_str}/energy_{energy}/sensitivity_{sensitivity_str}/{temp_str}/flux_diagrams/{x_O2_str}/{x_NH3_str}"
+        + f"/temp_results/{git_file_string}/{reactor_type_str}/energy_{energy}/sensitivity_{sensitivity_str}/{temp_str}/flux_diagrams/{x_O2_str}/{x_NH3_str}"
     )
     # create species folder for species pictures if it does not already exist
     try:
@@ -547,7 +547,7 @@ def run_reactor(
                 + list(surf.X)
                 + list(gas.net_production_rates)
                 + list(surf.net_production_rates)
-                + list(gas.net_rates_of_progress)
+              #  + list(gas.net_rates_of_progress)
                 + list(surf.net_rates_of_progress)
                 + sensitivities_all,
             )
@@ -573,7 +573,7 @@ def run_reactor(
                 + list(surf.X)
                 + list(gas.net_production_rates)
                 + list(surf.net_production_rates)
-                + list(gas.net_rates_of_progress)
+               # + list(gas.net_rates_of_progress)
                 + list(surf.net_rates_of_progress)
             )
 
@@ -597,16 +597,14 @@ git_repo = "../ammonia/"
 cti_file = git_repo + "base/cantera/chem_annotated.cti"
 
 # Reactor settings arrays for run
-#Temps = [498,523,548,573,598,623,648,673,698]  #523-673K
-Temps = [598]
+Temps = np.linspace(498,698,100)  #523-673K
 Pressures = [1] # 1 bar
 volume_flows = [5.8333e-5] # [m^3/s] 
 #3500 Ncm3/min = 3500/e6/60 m3/s = 5.8333e-5
 
 # NH3/O2 = 0.068
-O2_fraction = [0.88] #O2 partial pressure(atm)
-NH3_fraction = np.linspace(0.01,0.12,100)
-# NH3_fraction = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06,0.066, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12] #NH3 partial pressure, 0.01–0.12 atm
+O2_fraction = [0.88] #O2 partial pressure, atm
+NH3_fraction = [0.066] #NH3 partial pressure, atm
 
 # reaction time
 reactime = 1e5

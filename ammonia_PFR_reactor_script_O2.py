@@ -222,13 +222,13 @@ def run_reactor(
 
     # set initial temps, pressures, concentrations
     temp = settings[array_i][0]  # kelvin
-    temp_str = str(temp)[0:9]
+    temp_str = str(temp)[0]
     pressure = settings[array_i][2] * ct.one_atm  # Pascals
 
     surf_temp = temp
 
     X_o2 = settings[array_i][4]
-    x_O2_str = str(X_o2)[0:8].replace(".", "_")
+    x_O2_str = str(X_o2)[0:100].replace(".", "_")
 
     X_nh3 = (settings[array_i][5])
     x_NH3_str = str(X_nh3)[0].replace(".", "_")
@@ -260,24 +260,18 @@ def run_reactor(
     X_nh3 = float(gas["NH3(6)"].X)
     X_he = float(gas["He"].X)
 
-    # create gas inlet
+    # create gas inlet and outlet
     inlet = ct.Reservoir(gas)
-
-    # create gas outlet
     exhaust = ct.Reservoir(gas)
 
-    # Reactor volume
+    # Use a chain of batch reactors to represent a PFR reactor
     number_of_reactors = 1001
     rradius = 1.4e-4 #140µm to 0.00014m
     rtotal_length = 9e-3 #9mm to 0.009m
-    rtotal_vol = (rradius ** 2) * pi * rtotal_length # / 2 (divided by 2 for semi-cylinder)
+    rtotal_vol = (rradius**2)*pi*rtotal_length # / 2 (divided by 2 for semi-cylinder)
     
-    rlength = rtotal_length/1001
-
-
-    # divide totareactor total volume 
-    rvol = (rtotal_vol )/number_of_reactors
-
+    rlength = rtotal_length/(number_of_reactors-1)
+    rvol = (rtotal_vol)/number_of_reactors #check porosity
 
     # Catalyst Surface Area
     site_density = (surf.site_density * 1000)  # [mol/m^2] cantera uses kmol/m^2, convert to mol/m^2
@@ -553,7 +547,7 @@ def run_reactor(
                 + list(surf.X)
                 + list(gas.net_production_rates)
                 + list(surf.net_production_rates)
-              #  + list(gas.net_rates_of_progress)
+                + list(gas.net_rates_of_progress)
                 + list(surf.net_rates_of_progress)
                 + sensitivities_all,
             )
@@ -579,13 +573,13 @@ def run_reactor(
                 + list(surf.X)
                 + list(gas.net_production_rates)
                 + list(surf.net_production_rates)
-               # + list(gas.net_rates_of_progress)
+                + list(gas.net_rates_of_progress)
                 + list(surf.net_rates_of_progress)
             )
 
 
         iter_ct += 1
-        distance_mm = n * rlength * 1.0e3  # distance in mm
+        distance_mm = n * rlength * 1.0e3 + 0.009 # distance in mm
 
     outfile.close()
 
@@ -609,8 +603,8 @@ volume_flows = [5.8333e-5] # [m^3/s]
 #3500 Ncm3/min = 3500/e6/60 m3/s = 5.8333e-5
 
 # NH3/O2 = 0.068
-O2_fraction = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.88,0.9] #O2 partial pressure, 0.10–0.88 atm
-NH3_fraction = [0.066] #NH3 partial pressure, 0.01–0.12 atm
+O2_fraction = np.linspace(0.01,0.88,100) #O2 partial pressure, 0.10–0.88 atm
+NH3_fraction = [0.066] #NH3 partial pressure(atm)
 
 # reaction time
 reactime = 1e5
