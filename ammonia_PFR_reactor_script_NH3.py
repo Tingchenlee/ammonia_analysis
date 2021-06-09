@@ -231,7 +231,7 @@ def run_reactor(
     x_O2_str = str(X_o2)[0].replace(".", "_")
 
     X_nh3 = (settings[array_i][5])
-    x_NH3_str = str(X_nh3)[0:11].replace(".", "_")
+    x_NH3_str = str(X_nh3)[0:100].replace(".", "_")
 
     X_he = 1 - X_o2 - X_nh3
 
@@ -260,29 +260,23 @@ def run_reactor(
     X_nh3 = float(gas["NH3(6)"].X)
     X_he = float(gas["He"].X)
 
-    # create gas inlet
+    # create gas inlet and outlet
     inlet = ct.Reservoir(gas)
-
-    # create gas outlet
     exhaust = ct.Reservoir(gas)
 
-    # Reactor volume
+    # Use a chain of batch reactors to represent a PFR reactor
     number_of_reactors = 1001
     rradius = 1.4e-4 #140µm to 0.00014m
     rtotal_length = 9e-3 #9mm to 0.009m
-    rtotal_vol = (rradius ** 2) * pi * rtotal_length # / 2 (divided by 2 for semi-cylinder)
+    rtotal_vol = (rradius**2)*pi*rtotal_length # / 2 (divided by 2 for semi-cylinder)
     
-    rlength = rtotal_length/1001
-
-
-    # divide totareactor total volume 
-    rvol = (rtotal_vol )/number_of_reactors
-
+    rlength = rtotal_length/(number_of_reactors-1)
+    rvol = (rtotal_vol)/number_of_reactors #check porosity
 
     # Catalyst Surface Area
-    site_density = (surf.site_density * 1000)  # [mol/m^2] cantera uses kmol/m^2, convert to mol/m^2
-    cat_area_total = 14*rradius * 2 * pi * rtotal_length # [m^3]  # / 2 (divided by 2 for semi-cylinder)
-    cat_area = cat_area_total / number_of_reactors
+    site_density = (surf.site_density*1000)  # [mol/m^2] cantera uses kmol/m^2, convert to mol/m^2
+    cat_area_total = 14*rradius*2*pi*rtotal_length # [m^3]  # / 2 (divided by 2 for semi-cylinder)
+    cat_area = cat_area_total/(number_of_reactors-1)
 
     # reactor initialization
     if reactor_type == 0:
@@ -425,7 +419,7 @@ def run_reactor(
                 "X_o2 initial",
                 "X_he initial",
                 "(NH3/O2)",
-                "T (C) final",
+                "T (K) final",
                 "Rtol",
                 "Atol",
                 "reactor type",
@@ -453,7 +447,7 @@ def run_reactor(
                 "X_o2 initial",
                 "X_he initial",
                 "(NH3/O2)",
-                "T (C) final",
+                "T (K) final",
                 "Rtol",
                 "Atol",
                 "reactor type",
@@ -585,7 +579,7 @@ def run_reactor(
 
 
         iter_ct += 1
-        distance_mm = n * rlength * 1.0e3  # distance in mm
+        distance_mm = n * rlength * 1.0e3 + 0.009 # distance in mm
 
     outfile.close()
 
@@ -603,14 +597,16 @@ git_repo = "../ammonia/"
 cti_file = git_repo + "base/cantera/chem_annotated.cti"
 
 # Reactor settings arrays for run
-Temps = [498,523,548,573,598,623,648,673,698]  #523-673K
+#Temps = [498,523,548,573,598,623,648,673,698]  #523-673K
+Temps = [598]
 Pressures = [1] # 1 bar
 volume_flows = [5.8333e-5] # [m^3/s] 
 #3500 Ncm3/min = 3500/e6/60 m3/s = 5.8333e-5
 
 # NH3/O2 = 0.068
 O2_fraction = [0.88] #O2 partial pressure, 0.10–0.88 atm
-NH3_fraction = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12] #NH3 partial pressure, 0.01–0.12 atm
+NH3_fraction = np.linspace(0.01,0.12,100)
+# NH3_fraction = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06,0.066, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12] #NH3 partial pressure, 0.01–0.12 atm
 
 # reaction time
 reactime = 1e5
