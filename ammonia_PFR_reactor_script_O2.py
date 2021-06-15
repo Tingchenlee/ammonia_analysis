@@ -337,7 +337,8 @@ def run_reactor(
         os.path.dirname(os.path.abspath(__file__))
         + f"/results/O2_results/{git_file_string}/{reactor_type_str}/energy_{energy}/sensitivity_{sensitivity_str}/{temp_str}/results"
     )
-
+    logging.warning(f"Saving results in {results_path}, the file's name is _temp_{temp}_O2_{x_O2_str}_NH3_{x_NH3_str}.csv")
+        + 
     flux_path = (
         os.path.dirname(os.path.abspath(__file__))
         + f"/results/O2_results/{git_file_string}/{reactor_type_str}/energy_{energy}/sensitivity_{sensitivity_str}/{temp_str}/flux_diagrams/{x_O2_str}/{x_NH3_str}"
@@ -579,7 +580,7 @@ def run_reactor(
 
 
         iter_ct += 1
-        distance_mm = n * rlength * 1.0e3 + 0.009 # distance in mm
+        distance_mm = (n+1) * rlength * 1.0e3# distance in mm
 
     outfile.close()
 
@@ -605,7 +606,7 @@ volume_flows = [5.8333e-5] # [m^3/s]
 #3500 Ncm3/min = 3500/e6/60 m3/s = 5.8333e-5
 
 # NH3/O2 = 0.068
-O2_fraction = np.linspace(0.1,0.88,100) #O2 partial pressure, 0.10–0.88 atm
+O2_fraction = np.linspace(0.1,0.88,30) #O2 partial pressure, 0.10–0.88 atm
 NH3_fraction = [0.066] #NH3 partial pressure(atm)
 
 # reaction time

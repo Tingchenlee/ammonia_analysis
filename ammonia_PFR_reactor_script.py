@@ -228,10 +228,10 @@ def run_reactor(
     surf_temp = temp
 
     X_o2 = settings[array_i][4]
-    x_O2_str = str(X_o2)[0:8].replace(".", "_")
+    x_O2_str = str(X_o2)[0:7].replace(".", "_")
 
     X_nh3 = (settings[array_i][5])
-    x_NH3_str = str(X_nh3)[0:6].replace(".", "_")
+    x_NH3_str = str(X_nh3)[0:12].replace(".", "_")
 
     X_he = 1 - X_o2 - X_nh3
 
@@ -338,6 +338,7 @@ def run_reactor(
         + f"/results/ammonia_results/{git_file_string}/{reactor_type_str}/energy_{energy}/sensitivity_{sensitivity_str}/{temp_str}/results"
     )
 
+    logging.warning(f"Saving results in {results_path}, the file's name is _temp_{temp}_O2_{x_O2_str}_NH3_{x_NH3_str}.csv")
     flux_path = (
         os.path.dirname(os.path.abspath(__file__))
         + f"/results/ammonia_results/{git_file_string}/{reactor_type_str}/energy_{energy}/sensitivity_{sensitivity_str}/{temp_str}/flux_diagrams/{x_O2_str}/{x_NH3_str}"
@@ -547,7 +548,7 @@ def run_reactor(
                 + list(surf.X)
                 + list(gas.net_production_rates)
                 + list(surf.net_production_rates)
-                #+ list(gas.net_rates_of_progress)
+                + list(gas.net_rates_of_progress)
                 + list(surf.net_rates_of_progress)
                 + sensitivities_all,
             )
@@ -573,7 +574,7 @@ def run_reactor(
                 + list(surf.X)
                 + list(gas.net_production_rates)
                 + list(surf.net_production_rates)
-              #  + list(gas.net_rates_of_progress)
+                + list(gas.net_rates_of_progress)
                 + list(surf.net_rates_of_progress)
             )
 
@@ -598,15 +599,16 @@ cti_file = git_repo + "base/cantera/chem_annotated.cti"
 
 # Reactor settings arrays for run
 Temps = [498,523,548,573,598,623,648,673,698]  #523-673K
-
+#Temps = [498,598,698]
 Pressures = [1] # 1 bar
 volume_flows = [5.8333e-5] # [m^3/s] 
 #3500 Ncm3/min = 3500/e6/60 m3/s = 5.8333e-5
 
 # NH3/O2 = 0.068
-O2_fraction = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.88] #O2 partial pressure(atm)
-#NH3_fraction = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06,0.066, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12] #NH3 partial pressure, 0.01–0.12 atm
-NH3_fraction =[0.01,0.03,0.05,0.066,0.08,0.10,0.12]
+#O2_fraction = [0.88]
+O2_fraction = [0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.88] #O2 partial pressure(atm)
+NH3_fraction = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06,0.066, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12] #NH3 partial pressure, 0.01–0.12 atm
+#NH3_fraction =[0.01,0.03,0.05,0.066,0.08,0.10,0.12]
 # reaction time
 reactime = 1e5
 

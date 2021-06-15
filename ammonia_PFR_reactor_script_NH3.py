@@ -175,10 +175,10 @@ def save_flux_diagrams(*phases, suffix="", timepoint="", species_path=""):
 
 def run_reactor(
     cti_file,
-    t_array=[548],
-    surf_t_array=[548], # not used, but will be for different starting temperatures
+    t_array=[598],
+    surf_t_array=[598], # not used, but will be for different starting temperatures
     p_array=[1],
-    v_array=[2.771e-8], # 14*7*(140e-4)^2*π/2*0.9=0.0002771(cm^3)=2.771e-10(m^3)
+    v_array=[0.005], # 14*7*(140e-4)^2*π/2*0.9=0.0002771(cm^3)=2.771e-10(m^3)2.771e-8
     o2_array=[0.88],
     nh3_array=[0.066],
     rtol=1.0e-11,
@@ -222,7 +222,7 @@ def run_reactor(
 
     # set initial temps, pressures, concentrations
     temp = settings[array_i][0]  # kelvin
-    temp_str = str(temp)[0:8]
+    temp_str = str(temp)[0]
     pressure = settings[array_i][2] * ct.one_atm  # Pascals
 
     surf_temp = temp
@@ -231,7 +231,7 @@ def run_reactor(
     x_O2_str = str(X_o2)[0].replace(".", "_")
 
     X_nh3 = (settings[array_i][5])
-    x_NH3_str = str(X_nh3)[0:100].replace(".", "_")
+    x_NH3_str = str(X_nh3)[0:30].replace(".", "_")
 
     X_he = 1 - X_o2 - X_nh3
 
@@ -275,7 +275,8 @@ def run_reactor(
 
     # Catalyst Surface Area
     site_density = (surf.site_density*1000)  # [mol/m^2] cantera uses kmol/m^2, convert to mol/m^2
-    cat_area_total = 14*rradius*2*pi*rtotal_length # [m^3]  # / 2 (divided by 2 for semi-cylinder)
+    #site_density = 2.483e-2 #kmol/m^2
+    cat_area_total = rradius*2*pi*rtotal_length # [m^3]  # / 2 (divided by 2 for semi-cylinder)
     cat_area = cat_area_total/(number_of_reactors-1)
 
     # reactor initialization
@@ -313,6 +314,7 @@ def run_reactor(
 
     # initialize reactor network
     sim = ct.ReactorNet([r])
+    sim.set_max_time_step(1e-3)
 
     # set relative and absolute tolerances on the simulation
     # Common values for absolute tolerance are 1e-15 to 1e-25. Relative tolerance is usually 1e-4 to 1e-8
@@ -335,12 +337,12 @@ def run_reactor(
 
     results_path = (
         os.path.dirname(os.path.abspath(__file__))
-        + f"/results/NH3_results/{git_file_string}/{reactor_type_str}/energy_{energy}/sensitivity_{sensitivity_str}/{temp_str}/results"
+        + f"/results/NH3_results/{git_file_string}/{reactor_type_str}/energy_{energy}/sensitivity_{sensitivity_str}/{temp}/results"
     )
-
+    logging.warning(f"Saving results in {results_path}, the file's name is _temp_{temp}_O2_88_NH3_{x_NH3_str}.csv")
     flux_path = (
         os.path.dirname(os.path.abspath(__file__))
-        + f"/results/NH3_results/{git_file_string}/{reactor_type_str}/energy_{energy}/sensitivity_{sensitivity_str}/{temp_str}/flux_diagrams/{x_O2_str}/{x_NH3_str}"
+        + f"/results/NH3_results/{git_file_string}/{reactor_type_str}/energy_{energy}/sensitivity_{sensitivity_str}/{temp}/flux_diagrams/{x_O2_str}/{x_NH3_str}"
     )
     # create species folder for species pictures if it does not already exist
     try:
@@ -547,7 +549,7 @@ def run_reactor(
                 + list(surf.X)
                 + list(gas.net_production_rates)
                 + list(surf.net_production_rates)
-             #   + list(gas.net_rates_of_progress)
+                + list(gas.net_rates_of_progress)
                 + list(surf.net_rates_of_progress)
                 + sensitivities_all,
             )
@@ -573,13 +575,13 @@ def run_reactor(
                 + list(surf.X)
                 + list(gas.net_production_rates)
                 + list(surf.net_production_rates)
-              #  + list(gas.net_rates_of_progress)
+                + list(gas.net_rates_of_progress)
                 + list(surf.net_rates_of_progress)
             )
 
 
         iter_ct += 1
-        distance_mm = n * rlength * 1.0e3 + 0.009 # distance in mm
+        distance_mm = (n+1) * rlength * 1.0e3 # distance in mm
 
     outfile.close()
 
@@ -603,13 +605,13 @@ Pressures = [1] # 1 bar
 volume_flows = [5.8333e-5] # [m^3/s] 
 #3500 Ncm3/min = 3500/e6/60 m3/s = 5.8333e-5
 
-# NH3/O2 = 0.068
+# NH3/O2 = 0.068å
 O2_fraction = [0.88] #O2 partial pressure(atm)
-NH3_fraction = np.linspace(0.01,0.12,100)
-# NH3_fraction = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06,0.066, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12] #NH3 partial pressure, 0.01–0.12 atm
-
+#NH3_fraction = np.linspace(0.01,0.12,30)
+#NH3_fraction = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06,0.066, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12] #NH3 partial pressure, 0.01–0.12 atm
+NH3_fraction = [0.01,0.015,0.02,0.025,0.03,0.035,0.04,0.045,0.05,0.055,0.06,0.066,0.07,0.075,0.08,0.085,0.09,0.095,0.1,0.105,0.11,0.0115,0.12] #23 values
 # reaction time
-reactime = 1e5
+reactime = 1e3
 
 # sensitivity settings
 sensitivity = False
