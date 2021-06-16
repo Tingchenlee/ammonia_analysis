@@ -178,7 +178,7 @@ def run_reactor(
     t_array=[598],
     surf_t_array=[598], # not used, but will be for different starting temperatures
     p_array=[1],
-    v_array=[0.005], # 14*7*(140e-4)^2*π/2*0.9=0.0002771(cm^3)=2.771e-10(m^3)2.771e-8
+    v_array=[2.7155e-8], # 14*7*(140e-4)^2*π/2*0.9=0.027155(cm^3)=2.7155e-8(m^3)
     o2_array=[0.88],
     nh3_array=[0.066],
     rtol=1.0e-11,
@@ -276,7 +276,7 @@ def run_reactor(
     # Catalyst Surface Area
     site_density = (surf.site_density*1000)  # [mol/m^2] cantera uses kmol/m^2, convert to mol/m^2
     #site_density = 2.483e-2 #kmol/m^2
-    cat_area_total = rradius*2*pi*rtotal_length # [m^3]  # / 2 (divided by 2 for semi-cylinder)
+    cat_area_total = 14*7*rradius*2/2*pi*rtotal_length # [m^3]  # / 2 (divided by 2 for semi-cylinder)
     cat_area = cat_area_total/(number_of_reactors-1)
 
     # reactor initialization
@@ -300,7 +300,7 @@ def run_reactor(
 
     # flow controllers 
     one_atm = ct.one_atm
-    FC_temp = 293.15
+    FC_temp = 298.15
     volume_flow = settings[array_i][3]  # [m^3/s]
     molar_flow = volume_flow * one_atm / (8.3145 * FC_temp)  # [mol/s]
     mass_flow = molar_flow * (X_nh3 * mw_nh3 + X_o2 * mw_o2 + X_he * mw_he)  # [kg/s]
@@ -611,7 +611,7 @@ O2_fraction = [0.88] #O2 partial pressure(atm)
 #NH3_fraction = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06,0.066, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12] #NH3 partial pressure, 0.01–0.12 atm
 NH3_fraction = [0.01,0.015,0.02,0.025,0.03,0.035,0.04,0.045,0.05,0.055,0.06,0.066,0.07,0.075,0.08,0.085,0.09,0.095,0.1,0.105,0.11,0.0115,0.12] #23 values
 # reaction time
-reactime = 1e3
+reactime = 1e5
 
 # sensitivity settings
 sensitivity = False
