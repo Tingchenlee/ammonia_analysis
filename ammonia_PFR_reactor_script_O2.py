@@ -175,10 +175,10 @@ def save_flux_diagrams(*phases, suffix="", timepoint="", species_path=""):
 
 def run_reactor(
     cti_file,
-    t_array=[548],
-    surf_t_array=[548], # not used, but will be for different starting temperatures
+    t_array=[598],
+    surf_t_array=[598], # not used, but will be for different starting temperatures
     p_array=[1],
-    v_array=[2.771e-8], # 14*7*(140e-4)^2*π/2*0.9=0.0002771(cm^3)=2.771e-10(m^3)
+    v_array=[2.7155e-8], # 14*7*(140e-4)^2*π/2*0.9=0.027155(cm^3)=2.7155e-8(m^3)
     o2_array=[0.88],
     nh3_array=[0.066],
     rtol=1.0e-11,
@@ -275,7 +275,7 @@ def run_reactor(
 
     # Catalyst Surface Area
     site_density = (surf.site_density * 1000)  # [mol/m^2] cantera uses kmol/m^2, convert to mol/m^2
-    cat_area_total = 14*rradius * 2 * pi * rtotal_length # [m^3]  # / 2 (divided by 2 for semi-cylinder)
+    cat_area_total = 1000*14*7*rradius*2/2*pi*rtotal_length # [m^3]  # / 2 (divided by 2 for semi-cylinder)
     cat_area = cat_area_total / number_of_reactors
 
     # reactor initialization
@@ -296,10 +296,11 @@ def run_reactor(
     rsurf = ct.ReactorSurface(surf, r, A=cat_area)
     r.volume = rvol
     surf.coverages = "X(1):1.0"
+    O_X(9)
 
     # flow controllers 
     one_atm = ct.one_atm
-    FC_temp = 293.15
+    FC_temp = 298.15
     volume_flow = settings[array_i][3]  # [m^3/s]
     molar_flow = volume_flow * one_atm / (8.3145 * FC_temp)  # [mol/s]
     mass_flow = molar_flow * (X_nh3 * mw_nh3 + X_o2 * mw_o2 + X_he * mw_he)  # [kg/s]
@@ -313,11 +314,14 @@ def run_reactor(
 
     # initialize reactor network
     sim = ct.ReactorNet([r])
-
+    #sim.set_max_time_step(1e-3)
+    
     # set relative and absolute tolerances on the simulation
     # Common values for absolute tolerance are 1e-15 to 1e-25. Relative tolerance is usually 1e-4 to 1e-8
-    sim.rtol = 1.0e-11
-    sim.atol = 1.0e-22
+#     sim.rtol = 1.0e-11
+#     sim.atol = 1.0e-22
+    sim.rtol = 1.0e-9
+    sim.atol = 1.0e-21
 
     #################################################
     # Run single reactor
@@ -338,7 +342,7 @@ def run_reactor(
         + f"/results/O2_results/{git_file_string}/{reactor_type_str}/energy_{energy}/sensitivity_{sensitivity_str}/{temp_str}/results"
     )
     logging.warning(f"Saving results in {results_path}, the file's name is _temp_{temp}_O2_{x_O2_str}_NH3_{x_NH3_str}.csv")
-        + 
+    
     flux_path = (
         os.path.dirname(os.path.abspath(__file__))
         + f"/results/O2_results/{git_file_string}/{reactor_type_str}/energy_{energy}/sensitivity_{sensitivity_str}/{temp_str}/flux_diagrams/{x_O2_str}/{x_NH3_str}"
@@ -548,7 +552,7 @@ def run_reactor(
                 + list(surf.X)
                 + list(gas.net_production_rates)
                 + list(surf.net_production_rates)
-              #  + list(gas.net_rates_of_progress)
+                + list(gas.net_rates_of_progress)
                 + list(surf.net_rates_of_progress)
                 + sensitivities_all,
             )
@@ -574,7 +578,7 @@ def run_reactor(
                 + list(surf.X)
                 + list(gas.net_production_rates)
                 + list(surf.net_production_rates)
-               # + list(gas.net_rates_of_progress)
+                + list(gas.net_rates_of_progress)
                 + list(surf.net_rates_of_progress)
             )
 
@@ -599,7 +603,7 @@ cti_file = git_repo + "base/cantera/chem_annotated.cti"
 
 # Reactor settings arrays for run
 #Temps = [498,523,548,573,598,623,648,673,698]  #523-673K
-Temps = [598]
+Temps = [673]
 
 Pressures = [1] # 1 bar
 volume_flows = [5.8333e-5] # [m^3/s] 
@@ -621,6 +625,7 @@ run_reactor(
     cti_file=cti_file,
     t_array=Temps,
     reactor_type=1,
+    v_array=volume_flows,
     o2_array=O2_fraction,
     nh3_array=NH3_fraction,
     energy="off",

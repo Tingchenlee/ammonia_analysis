@@ -268,7 +268,7 @@ def run_reactor(
     number_of_reactors = 1001
     rradius = 1.4e-4 #140µm to 0.00014m
     rtotal_length = 9e-3 #9mm to 0.009m
-    rtotal_vol = (rradius**2)*pi*rtotal_length # / 2 (divided by 2 for semi-cylinder)
+    rtotal_vol = 14*7*(rradius**2)*pi*rtotal_length # / 2 (divided by 2 for semi-cylinder)
     
     rlength = rtotal_length/(number_of_reactors-1)
     rvol = (rtotal_vol)/number_of_reactors #check porosity
@@ -276,8 +276,8 @@ def run_reactor(
     # Catalyst Surface Area
     site_density = (surf.site_density*1000)  # [mol/m^2] cantera uses kmol/m^2, convert to mol/m^2
     #site_density = 2.483e-2 #kmol/m^2
-    cat_area_total = 14*7*rradius*2/2*pi*rtotal_length # [m^3]  # / 2 (divided by 2 for semi-cylinder)
-    cat_area = cat_area_total/(number_of_reactors-1)
+    cat_area_total = 85.11*14*7*rradius*2/2*pi*rtotal_length # [m^3]  # / 2 (divided by 2 for semi-cylinder)
+    cat_area = cat_area_total/number_of_reactors
 
     # reactor initialization
     if reactor_type == 0:
@@ -318,7 +318,7 @@ def run_reactor(
 
     # set relative and absolute tolerances on the simulation
     # Common values for absolute tolerance are 1e-15 to 1e-25. Relative tolerance is usually 1e-4 to 1e-8
-    sim.rtol = 1.0e-11
+    sim.rtol = 1.0e-12
     sim.atol = 1.0e-22
 
     #################################################
@@ -602,10 +602,10 @@ cti_file = git_repo + "base/cantera/chem_annotated.cti"
 #Temps = [498,523,548,573,598,623,648,673,698]  #523-673K
 Temps = [598]
 Pressures = [1] # 1 bar
-volume_flows = [5.8333e-5] # [m^3/s] 
+volume_flows = [5.8333e-8] # [m^3/s] 
 #3500 Ncm3/min = 3500/e6/60 m3/s = 5.8333e-5
-
-# NH3/O2 = 0.068å
+#2000 Ncm3/min = 2000/e6/60 m3/s = 3.3333e-5
+# NH3/O2 = 0.068
 O2_fraction = [0.88] #O2 partial pressure(atm)
 #NH3_fraction = np.linspace(0.01,0.12,30)
 #NH3_fraction = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06,0.066, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12] #NH3 partial pressure, 0.01–0.12 atm
@@ -622,6 +622,7 @@ run_reactor(
     cti_file=cti_file,
     t_array=Temps,
     reactor_type=1,
+    v_array=volume_flows,
     o2_array=O2_fraction,
     nh3_array=NH3_fraction,
     energy="off",

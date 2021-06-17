@@ -200,7 +200,7 @@ def run_reactor(
         array_i = 0
 
     # get git commit hash and message
-    rmg_model_path = "../ammonia"
+    rmg_model_path = "/work/westgroup/lee.ting/cantera/ammonia"
     repo = git.Repo(rmg_model_path)
     date = time.localtime(repo.head.commit.committed_date)
     git_date = f"{date[0]}_{date[1]}_{date[2]}_{date[3]}{date[4]}"
@@ -268,7 +268,7 @@ def run_reactor(
     number_of_reactors = 1001
     rradius = 1.4e-4 #140µm to 0.00014m
     rtotal_length = 9e-3 #9mm to 0.009m
-    rtotal_vol = (rradius**2)*pi*rtotal_length # / 2 (divided by 2 for semi-cylinder)
+    rtotal_vol = 14*7*(rradius**2)*pi*rtotal_length/2 # / 2 (divided by 2 for semi-cylinder)===>2.7154e-8
     
     rlength = rtotal_length/(number_of_reactors-1)
     rvol = (rtotal_vol)/number_of_reactors #check porosity
@@ -276,8 +276,9 @@ def run_reactor(
     # Catalyst Surface Area
     site_density = (surf.site_density*1000)  # [mol/m^2] cantera uses kmol/m^2, convert to mol/m^2
     #site_density = 2.483e-2 #kmol/m^2
-    cat_area_total = 2000*rradius*2*pi*rtotal_length # [m^3]  # / 2 (divided by 2 for semi-cylinder)
-    cat_area = cat_area_total/(number_of_reactors-1)
+    cat_area_total = 0.0660382956#14*7*rradius*2/2*pi*rtotal_length#85.11*14*7*rradius*2/2*pi*rtotal_length # [m^3]  # / 2 (divided by 2 for semi-cylinder)
+    #surface_area_to_volume_ratio = 2.431933e-10
+    cat_area = cat_area_total/number_of_reactors
 
     # reactor initialization
     if reactor_type == 0:
@@ -296,7 +297,9 @@ def run_reactor(
     # calculate the available catalyst area in a differential reactor
     rsurf = ct.ReactorSurface(surf, r, A=cat_area)
     r.volume = rvol
-    surf.coverages = "X(1):1.0"
+    surf.coverages = "X(1):1"
+    #"NH3X:0.2 , NX:0.4, OHX:0.4"
+    #"X(1):1,NOX:0.25,OX:0.25,NX:0,OHX:0,NH3X:0,NH2_X(8):0,NH_X(9):0,H2O_X(11):0"
 
     # flow controllers 
     one_atm = ct.one_atm
@@ -310,7 +313,7 @@ def run_reactor(
     # MassFlowController, with an additional pressure-dependent term. By explicitly
     # including the upstream mass flow rate, the pressure is kept constant without
     # needing to use a large value for 'K', which can introduce undesired stiffness.
-    outlet_mfc = ct.PressureController(r, exhaust, master=mfc, K=0.01)
+    outlet_mfc = ct.PressureController(r, exhaust, master=mfc, K=1e-5)
 
     # initialize reactor network
     sim = ct.ReactorNet([r])
@@ -595,7 +598,7 @@ def run_reactor(
 #######################################################################
 
 # filepath for writing files
-git_repo = "../ammonia/"
+git_repo = "/work/westgroup/lee.ting/cantera/ammonia/"
 cti_file = git_repo + "base/cantera/chem_annotated.cti"
 
 # Reactor settings arrays for run
@@ -607,11 +610,11 @@ volume_flows = [5.8333e-5] # [m^3/s]
 
 # NH3/O2 = 0.068å
 O2_fraction = [0.88] #O2 partial pressure(atm)
-NH3_fraction = np.linspace(0.01,0.12,60)
-#NH3_fraction = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06,0.066, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12] #NH3 partial pressure, 0.01–0.12 atm
+#NH3_fraction = np.linspace(0.01,0.12,30)
+NH3_fraction = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06,0.066, 0.07, 0.08, 0.09, 0.1, 0.11, 0.12] #NH3 partial pressure, 0.01–0.12 atm
 #NH3_fraction = [0.01,0.015,0.02,0.025,0.03,0.035,0.04,0.045,0.05,0.055,0.06,0.066,0.07,0.075,0.08,0.085,0.09,0.095,0.1,0.105,0.11,0.0115,0.12] #23 values
 # reaction time
-reactime = 1e3
+reactime = 1e5
 
 # sensitivity settings
 sensitivity = False

@@ -175,10 +175,10 @@ def save_flux_diagrams(*phases, suffix="", timepoint="", species_path=""):
 
 def run_reactor(
     cti_file,
-    t_array=[548],
-    surf_t_array=[548], # not used, but will be for different starting temperatures
+    t_array=[598],
+    surf_t_array=[598], # not used, but will be for different starting temperatures
     p_array=[1],
-    v_array=[2.771e-8], # 14*7*(140e-4)^2*π/2*0.9=0.0002771(cm^3)=2.771e-10(m^3)
+    v_array=[2.7155e-8], # 14*7*(140e-4)^2*π/2*0.9=0.027155(cm^3)=2.7155e-8(m^3)
     o2_array=[0.88],
     nh3_array=[0.066],
     rtol=1.0e-11,
@@ -275,8 +275,9 @@ def run_reactor(
 
     # Catalyst Surface Area
     site_density = (surf.site_density*1000)  # [mol/m^2] cantera uses kmol/m^2, convert to mol/m^2
-    cat_area_total = 14*rradius*2*pi*rtotal_length # [m^3]  # / 2 (divided by 2 for semi-cylinder)
-    cat_area = cat_area_total/(number_of_reactors-1)
+    #site_density = 2.483e-2 #kmol/m^2
+    cat_area_total = 14*7*rradius*2/2*pi*rtotal_length # [m^3]  # / 2 (divided by 2 for semi-cylinder)
+    cat_area = cat_area_total/number_of_reactors
 
     # reactor initialization
     if reactor_type == 0:
@@ -299,7 +300,7 @@ def run_reactor(
 
     # flow controllers 
     one_atm = ct.one_atm
-    FC_temp = 293.15
+    FC_temp = 298.15
     volume_flow = settings[array_i][3]  # [m^3/s]
     molar_flow = volume_flow * one_atm / (8.3145 * FC_temp)  # [mol/s]
     mass_flow = molar_flow * (X_nh3 * mw_nh3 + X_o2 * mw_o2 + X_he * mw_he)  # [kg/s]
@@ -337,7 +338,8 @@ def run_reactor(
         os.path.dirname(os.path.abspath(__file__))
         + f"/results/temp_results/{git_file_string}/{reactor_type_str}/energy_{energy}/sensitivity_{sensitivity_str}/{temp_str}/results"
     )
-
+    logging.warning(f"Saving results in {results_path}, the file's name is _temp_{temp_str}_O2_88_NH3_{x_NH3_str}.csv")
+    
     flux_path = (
         os.path.dirname(os.path.abspath(__file__))
         + f"/results/temp_results/{git_file_string}/{reactor_type_str}/energy_{energy}/sensitivity_{sensitivity_str}/{temp_str}/flux_diagrams/{x_O2_str}/{x_NH3_str}"
@@ -547,7 +549,7 @@ def run_reactor(
                 + list(surf.X)
                 + list(gas.net_production_rates)
                 + list(surf.net_production_rates)
-              #  + list(gas.net_rates_of_progress)
+                + list(gas.net_rates_of_progress)
                 + list(surf.net_rates_of_progress)
                 + sensitivities_all,
             )
@@ -573,13 +575,13 @@ def run_reactor(
                 + list(surf.X)
                 + list(gas.net_production_rates)
                 + list(surf.net_production_rates)
-               # + list(gas.net_rates_of_progress)
+                + list(gas.net_rates_of_progress)
                 + list(surf.net_rates_of_progress)
             )
 
 
         iter_ct += 1
-        distance_mm = n * rlength * 1.0e3 + 0.009 # distance in mm
+        distance_mm = (n+1) * rlength * 1.0e3# distance in mm
 
     outfile.close()
 
@@ -597,7 +599,8 @@ git_repo = "../ammonia/"
 cti_file = git_repo + "base/cantera/chem_annotated.cti"
 
 # Reactor settings arrays for run
-Temps = np.linspace(498,698,100)  #523-673K
+Temps = np.linspace(498,698,30)  #523-673K
+
 Pressures = [1] # 1 bar
 volume_flows = [5.8333e-5] # [m^3/s] 
 #3500 Ncm3/min = 3500/e6/60 m3/s = 5.8333e-5
@@ -618,6 +621,7 @@ run_reactor(
     cti_file=cti_file,
     t_array=Temps,
     reactor_type=1,
+    v_array=volume_flows,
     o2_array=O2_fraction,
     nh3_array=NH3_fraction,
     energy="off",
