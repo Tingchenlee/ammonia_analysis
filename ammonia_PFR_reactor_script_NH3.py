@@ -260,23 +260,25 @@ def run_reactor(
     X_nh3 = float(gas["NH3(6)"].X)
     X_he = float(gas["He"].X)
 
-    # create gas inlet and outlet
-    inlet = ct.Reservoir(gas)
-    exhaust = ct.Reservoir(gas)
-
     # Use a chain of batch reactors to represent a PFR reactor
     number_of_reactors = 1001
     rradius = 1.4e-4 #140µm to 0.00014m
     rtotal_length = 9e-3 #9mm to 0.009m
-    rtotal_vol = 14*7*(rradius**2)*pi*rtotal_length # / 2 (divided by 2 for semi-cylinder)
+    rtotal_vol = 49*(rradius**2)*pi*rtotal_length# 49 channels
     
     rlength = rtotal_length/(number_of_reactors-1)
     rvol = (rtotal_vol)/number_of_reactors #check porosity
 
     # Catalyst Surface Area
     site_density = (surf.site_density*1000)  # [mol/m^2] cantera uses kmol/m^2, convert to mol/m^2
-    #site_density = 2.483e-2 #kmol/m^2
-    cat_area_total = 85.11*14*7*rradius*2/2*pi*rtotal_length # [m^3]  # / 2 (divided by 2 for semi-cylinder)
+    #site_density = 2.483e-2 #kmol/m^2 for Pt in RMG
+    Pt_radius = 1.15e-9 #m, 23Å/2
+    Pt_mass = 5.43e-4 #g
+    Pt_density = 2.145e7 #g/m3
+    Pt_total_vol = Pt_mass/Pt_density
+    Pt_vol = 4/3*pi*Pt_radius**3
+    numbers_of_Pt = Pt_total_vol/Pt_vol
+    cat_area_total = numbers_of_Pt*4*pi*Pt_radius**2
     cat_area = cat_area_total/number_of_reactors
 
     # reactor initialization
